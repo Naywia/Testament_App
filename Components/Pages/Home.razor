@@ -22,17 +22,18 @@
     Fergoob mezino nabe fleeba kooj meepso sherb taw fleeba shamoo euranka foop.
 </p>
 
-<InputFile @ref="inputFile" OnChange="ImportPDF" accept="application/pdf" id="hidden-file-input" />
-<label for="hidden-file-input" class="custom-file-input">Importer PDF</label>
+<InputFile id="file-input" OnChange="ImportPDF" accept="application/pdf" class="visually-hidden" /> @* visually-hidden is Bootstrap and hides the input. *@
+<label for="file-input" class="custom-file-input">Importer PDF</label>
+
 @if (!string.IsNullOrEmpty(FileMessage))
 {
     <p>@FileMessage</p>
 }
+
 <a href="/overview">Start ny visning</a>
 
 @code {
-    private string FileMessage { get; set; }
-    private InputFile inputFile;
+    private string FileMessage { get; set; } = "";
 
     private void ImportPDF(InputFileChangeEventArgs e)
     {

@@ -1,8 +1,4 @@
-﻿#hidden-file-input {
-    display: none;
-}
-
-.custom-file-input {
+﻿.custom-file-input {
     display: inline-block;
     padding: 10px 20px;
     background-color: #007bff;
