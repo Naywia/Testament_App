@@ -3,12 +3,18 @@
 	public class Person
 	{
 		public string Name { get; set; }
-        public DateOnly BirthDay { get; set; }
-        public List<Person> Children { get; set; }
+		public DateOnly BirthDay { get; set; }
+		public List<Person> Children { get; set; }
 		public List<Person> Parents { get; set; }
 		public decimal Percentage { get; set; }
 		public bool IsAlive { get; set; }
 
+		public Person(string name, DateOnly birthDay, bool isAlive)
+		{
+			Name = name;
+			BirthDay = birthDay;
+			IsAlive = isAlive;
+		}
 
 		public void AddChild(Person child)
 		{
