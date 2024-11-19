@@ -1,4 +1,6 @@
 ﻿@page "/"
+@inject NavigationManager NavManager
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
@@ -15,7 +17,12 @@
     Yarma dow gwanda gedna badipsa awasa pipty maladai acko. 
     Fergoob mezino nabe fleeba kooj meepso sherb taw fleeba shamoo euranka foop.</p>
 
-<button>Import PDF</button>
-<button>Start ny visning</button>
+<button class="btn btn-primary">Import PDF</button>
+<button class="btn btn-primary" @onclick="NavigateToOverview">Start ny visning</button>
 
-
+@code {
+    private void NavigateToOverview()
+    {
+        NavManager.NavigateTo("/overview");
+    }
+}

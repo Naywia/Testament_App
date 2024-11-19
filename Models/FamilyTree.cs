@@ -1,16 +1,21 @@
 ﻿namespace Testament_App.Models
 {
-	public class FamilyTree
+	public static class FamilyTree
 	{
-		public List<Person> Members { get; set; }
-		public List<Marriage> Marriages { get; set; }
+		private static List<Person> Members = new();
+		private static List<Marriage> Marriages = new();
 
-		public void AddMember(Person person)
+		public static void AddMember(Person person)
 		{
 			Members.Add(person);
 		}
+		
+		public static List<Person> GetMembers()
+		{
+			return Members;
+		}
 
-		public void AddMarriage(Marriage marriage)
+		public static void AddMarriage(Marriage marriage)
 		{
 			Marriages.Add(marriage);
 		}

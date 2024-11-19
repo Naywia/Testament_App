@@ -1,0 +1,64 @@
+@* @typeparam TItem *@
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="() => {}">AddItem</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    private String ModalDisplay = "none;";
+    private String ModalClass = "";
+    private bool ShowBackdrop = false;
+
+    public async Task Open(bool shadow)
+    {
+        try
+        {
+            ModalDisplay = "block;";
+            ModalClass = "show";
+            ShowBackdrop = shadow;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async Task Close()
+    {
+        try
+        {
+            ModalDisplay = "none;";
+            ModalClass = "";
+            ShowBackdrop = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+}
