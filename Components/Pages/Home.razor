@@ -1,21 +1,53 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
 <h1>Velkommen til Arvefordeleren!</h1>
 
-<p>Wub fleeba grouw webney nurbler gab dorby mala yarma milay myshuno ah vitsu gerbits smustle. 
+<p>
+    Wub fleeba grouw webney nurbler gab dorby mala yarma milay myshuno ah vitsu gerbits smustle.
     Smustle treeb deg flurze fleeny debool fro mibsy treeb. Discufa choo zaroo nerk oh.
     Mezino krem kweb sula wepsa shanga noop gerbits. Shushubie blitz zaroo mibsy woohoo bagoo neib.
-    Badipsa ern zibbs simsa grobel swaybul zor gleb cou va heb gartzel borfna.</p>
-<p>Dorby beleesh shushubie burb abanoop noobty ern sedna taw. Sul zapzing mebzi glib pipty yarma zaebeltooty. 
-    Kowlenin wanbah clops zapzing flee oosh moocha doops morpher foo.</p>
-<p>Nooboo choba myshuno swoobie sons choo kweb skeeba shoona apper yebsey dow blitz. 
-    Abanoop vendu swobe fretishe blousa fredishay vendu swaybe pipty kowlenin. 
-    Yarma dow gwanda gedna badipsa awasa pipty maladai acko. 
-    Fergoob mezino nabe fleeba kooj meepso sherb taw fleeba shamoo euranka foop.</p>
+    Badipsa ern zibbs simsa grobel swaybul zor gleb cou va heb gartzel borfna.
+</p>
+<p>
+    Dorby beleesh shushubie burb abanoop noobty ern sedna taw. Sul zapzing mebzi glib pipty yarma zaebeltooty.
+    Kowlenin wanbah clops zapzing flee oosh moocha doops morpher foo.
+</p>
+<p>
+    Nooboo choba myshuno swoobie sons choo kweb skeeba shoona apper yebsey dow blitz.
+    Abanoop vendu swobe fretishe blousa fredishay vendu swaybe pipty kowlenin.
+    Yarma dow gwanda gedna badipsa awasa pipty maladai acko.
+    Fergoob mezino nabe fleeba kooj meepso sherb taw fleeba shamoo euranka foop.
+</p>
 
-<button>Import PDF</button>
-<button>Start ny visning</button>
+<InputFile @ref="inputFile" OnChange="ImportPDF" accept="application/pdf" id="hidden-file-input" />
+<label for="hidden-file-input" class="custom-file-input">Importer PDF</label>
+@if (!string.IsNullOrEmpty(FileMessage))
+{
+    <p>@FileMessage</p>
+}
+<a href="/overview">Start ny visning</a>
 
+@code {
+    private string FileMessage { get; set; }
+    private InputFile inputFile;
 
+    private void ImportPDF(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        // Ensure the file is a PDF
+        if (file.ContentType == "application/pdf")
+        {
+            FileMessage = "Uploadet fil: " + file.Name;
+        }
+        else
+        {
+            FileMessage = "Ugyldig filtype. Kun PDF er godtaget.";
+        }
+
+        StateHasChanged();
+    }
+}
