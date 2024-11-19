@@ -1,4 +1,17 @@
-﻿.custom-file-input {
+﻿#frontpage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#buttons {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.frontpage-buttons {
     display: inline-block;
     padding: 10px 20px;
     background-color: #007bff;
@@ -9,6 +22,10 @@
     transition: background-color 0.3s ease;
 }
 
-    .custom-file-input:hover {
+    .frontpage-buttons:hover {
         background-color: #0056b3;
     }
+
+.a-buttons {
+    text-decoration: none;
+}

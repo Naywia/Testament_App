@@ -3,34 +3,41 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Velkommen til Arvefordeleren!</h1>
+<section id="frontpage">
 
-<p>
-    Wub fleeba grouw webney nurbler gab dorby mala yarma milay myshuno ah vitsu gerbits smustle.
-    Smustle treeb deg flurze fleeny debool fro mibsy treeb. Discufa choo zaroo nerk oh.
-    Mezino krem kweb sula wepsa shanga noop gerbits. Shushubie blitz zaroo mibsy woohoo bagoo neib.
-    Badipsa ern zibbs simsa grobel swaybul zor gleb cou va heb gartzel borfna.
-</p>
-<p>
-    Dorby beleesh shushubie burb abanoop noobty ern sedna taw. Sul zapzing mebzi glib pipty yarma zaebeltooty.
-    Kowlenin wanbah clops zapzing flee oosh moocha doops morpher foo.
-</p>
-<p>
-    Nooboo choba myshuno swoobie sons choo kweb skeeba shoona apper yebsey dow blitz.
-    Abanoop vendu swobe fretishe blousa fredishay vendu swaybe pipty kowlenin.
-    Yarma dow gwanda gedna badipsa awasa pipty maladai acko.
-    Fergoob mezino nabe fleeba kooj meepso sherb taw fleeba shamoo euranka foop.
-</p>
+    <h1>Velkommen til Arvefordeleren!</h1>
 
-<InputFile id="file-input" OnChange="ImportPDF" accept="application/pdf" class="visually-hidden" /> @* visually-hidden is Bootstrap and hides the input. *@
-<label for="file-input" class="custom-file-input">Importer PDF</label>
+    <p>
+        Wub fleeba grouw webney nurbler gab dorby mala yarma milay myshuno ah vitsu gerbits smustle.
+        Smustle treeb deg flurze fleeny debool fro mibsy treeb. Discufa choo zaroo nerk oh.
+        Mezino krem kweb sula wepsa shanga noop gerbits. Shushubie blitz zaroo mibsy woohoo bagoo neib.
+        Badipsa ern zibbs simsa grobel swaybul zor gleb cou va heb gartzel borfna.
+    </p>
+    <p>
+        Dorby beleesh shushubie burb abanoop noobty ern sedna taw. Sul zapzing mebzi glib pipty yarma zaebeltooty.
+        Kowlenin wanbah clops zapzing flee oosh moocha doops morpher foo.
+    </p>
+    <p>
+        Nooboo choba myshuno swoobie sons choo kweb skeeba shoona apper yebsey dow blitz.
+        Abanoop vendu swobe fretishe blousa fredishay vendu swaybe pipty kowlenin.
+        Yarma dow gwanda gedna badipsa awasa pipty maladai acko.
+        Fergoob mezino nabe fleeba kooj meepso sherb taw fleeba shamoo euranka foop.
+    </p>
 
-@if (!string.IsNullOrEmpty(FileMessage))
-{
-    <p>@FileMessage</p>
-}
+    <div id="buttons">
+        <div>
+            <InputFile id="file-input" OnChange="ImportPDF" accept="application/pdf" class="visually-hidden" /> @* visually-hidden is Bootstrap and hides the input. *@
+            <label for="file-input" class="frontpage-buttons">Importer PDF</label>
 
-<a href="/overview">Start ny visning</a>
+            @if (!string.IsNullOrEmpty(FileMessage))
+            {
+                <p>@FileMessage</p>
+            }
+        </div>
+
+        <a href="/overview" class="frontpage-buttons a-buttons">Start ny visning</a>
+    </div>
+</section>
 
 @code {
     private string FileMessage { get; set; } = "";
