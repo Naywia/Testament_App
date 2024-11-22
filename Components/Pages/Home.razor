@@ -1,4 +1,8 @@
 ﻿@page "/"
+
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -6,28 +10,27 @@
 <section id="frontpage">
 
     <h1>Velkommen til Arvefordeleren!</h1>
-
-    <p>
-        Wub fleeba grouw webney nurbler gab dorby mala yarma milay myshuno ah vitsu gerbits smustle.
-        Smustle treeb deg flurze fleeny debool fro mibsy treeb. Discufa choo zaroo nerk oh.
-        Mezino krem kweb sula wepsa shanga noop gerbits. Shushubie blitz zaroo mibsy woohoo bagoo neib.
-        Badipsa ern zibbs simsa grobel swaybul zor gleb cou va heb gartzel borfna.
-    </p>
-    <p>
-        Dorby beleesh shushubie burb abanoop noobty ern sedna taw. Sul zapzing mebzi glib pipty yarma zaebeltooty.
-        Kowlenin wanbah clops zapzing flee oosh moocha doops morpher foo.
-    </p>
-    <p>
-        Nooboo choba myshuno swoobie sons choo kweb skeeba shoona apper yebsey dow blitz.
-        Abanoop vendu swobe fretishe blousa fredishay vendu swaybe pipty kowlenin.
-        Yarma dow gwanda gedna badipsa awasa pipty maladai acko.
-        Fergoob mezino nabe fleeba kooj meepso sherb taw fleeba shamoo euranka foop.
-    </p>
+    <div>
+        <p class="description">
+            <b>Planlægning af arv gjort enkelt og overskueligt.</b><br />
+            Arvefordeleren er din digitale løsning til at visualisere fordelingen af din arv, aktiver og familiestamtræ.
+            Vores værktøj hjælper dig med at skabe en gennemsigtig og retfærdig fordeling, så du kan sikre, at dine ønsker bliver respekteret –
+            uden unødvendige komplikationer for dine nærmeste.
+        </p>
+        <div class="description">
+            <b>Med Arvefordeleren kan du:</b> <br />
+            <ul>
+                <li>Visualisere din arv: Få et tydeligt overblik over, hvordan dine aktiver fordeles.</li>
+                <li>Oprette dit stamtræ: Se familiære forbindelser og få styr på din planlægning.</li>
+                <li>Træffe trygge beslutninger: Test forskellige fordelingsmodeller og få klarhed over konsekvenserne.</li>
+            </ul>
+        </div>
+    </div>
 
     <div id="buttons">
-        <div>
+        <div id="input-div">
             <InputFile id="file-input" OnChange="ImportPDF" accept="application/pdf" class="visually-hidden" /> @* visually-hidden is Bootstrap and hides the input. *@
-            <label for="file-input" class="frontpage-buttons">Importer PDF</label>
+            <label id="input-button" for="file-input" class="frontpage-buttons">Importer PDF</label>
 
             @if (!string.IsNullOrEmpty(FileMessage))
             {
@@ -58,4 +61,22 @@
 
         StateHasChanged();
     }
+
+    // This method runs when the page is first rendered
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Add class to the body element when the page first renders
+            await JSRuntime.InvokeVoidAsync("addClassToBody", "home-page");
+        }
+    }
+
+    // This method runs when the component is disposed (when navigating away from the page)
+    public async ValueTask DisposeAsync()
+    {
+        // Remove the class from the body when navigating away from the page
+        await JSRuntime.InvokeVoidAsync("removeClassFromBody", "home-page");
+    }
 }
+

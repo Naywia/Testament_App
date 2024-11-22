@@ -1,5 +1,28 @@
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100vh;
+    font-family: "Quicksand", "Montserrat", "Raleway", sans-serif
+}
+
+    body.home-page {
+        background-image: url('/images/background.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+        body.home-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 26, 51, 0.85); /* Blue tint with 30% opacity */
+            z-index: 0; /* Make sure it’s above the background but below the content */
+        }
+
+h1, h2, h3, h4 {
+    font-family: "Merriweather", "Playfair Display", serif
 }
 
 a, .btn-link {
