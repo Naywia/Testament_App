@@ -1,79 +1,10 @@
 ﻿@page "/overview"
-@using Testament_App.Models
-@rendermode InteractiveServer
 
-@* <PageTitle>Overview</PageTitle> *@
+<PageTitle>Overview</PageTitle>
 
 <h1>Velkommen til Visualisering</h1>
 
-@if (FamilyTree.GetMembers().Any())
-{
-    <div>
-        <h2>FamilyTree:</h2>
-        @foreach (var person in FamilyTree.GetMembers())
-        {
-            <p>Name: @person.Name</p>
-        }
-        @* <button @onclick="() => Modal.Open(true)">Tiløj ny person</button> *@
-        <button @onclick="() => addingNewTestator = true">Tiløj ny person</button>
-    </div>
-    @if (addingNewTestator)
-    {
-        <EditForm Model="testator" OnSubmit="Submit">
-            <label>
-                Navn:
-                <InputText @bind-value="testator.Name"></InputText>
-            </label>
-            <label>
-                Fødselsdag:
-                <InputDate TValue="DateOnly" @bind-Value="testator.Birthday"></InputDate>
-            </label>
-            <label>
-                ErDød?:
-                <InputCheckbox @bind-Value="testator.IsAlive"></InputCheckbox>
-            </label>
-            <button type="submit">Submit</button>
-        </EditForm>
-    }
-}
-else
-{
-    // create testator first family-tree member
-    <EditForm Model="testator" OnSubmit="Submit">
-        <label>
-            Navn:
-            <InputText @bind-value="testator.Name"></InputText>
-        </label>
-        <label>
-            Fødselsdag:
-            <InputDate TValue="DateOnly" @bind-Value="testator.Birthday"></InputDate>
-        </label>
-        <label>
-            ErDød?:
-            <InputCheckbox @bind-Value="testator.IsAlive"></InputCheckbox>
-        </label>
-        <button type="submit">Submit</button>
-    </EditForm>
-}
-<Modal @ref="Modal"/>
+<div class="container p-3 bg-light border border-dark border-1 rounded-3" style="background-color: lightgrey;">
+    <FamilyTreeComponent/>
+</div>
 
-@code {
-    [SupplyParameterFromForm]
-    private Testator testator { get; set; }
-    
-    private bool addingNewTestator = false;
-
-    private Modal Modal = new();
-    
-    protected override void OnInitialized()
-    {
-        testator = new();
-        base.OnInitialized();
-    }
-
-    private void Submit()
-    {
-        FamilyTree.AddMember(testator);
-        testator = new();
-    }
-}
