@@ -1,5 +1,4 @@
 @rendermode InteractiveServer
-@* addingNewTestator = true; *@
 @if (Inheritance.GetTestators().Any())
 {
     <h2>FamilyTree:</h2>
@@ -16,8 +15,9 @@
         <div class="p-0 m-0 bg-light border border-dark border-1 rounded-3">
             <p>Name: @heir.Name</p>
         </div>
-        *@
+    *@
     }
+    @*
     @if (addingNewTestator)
     {
         <EditForm Model="editTestator" OnSubmit="SubmitTestator">
@@ -33,12 +33,6 @@
                 ErDød?:
                 <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
             </label>
-            @*
-            <label>
-                Relation:
-                <input></input>
-            </label>
-            *@
             <button class="btn btn-primary" type="submit">Submit</button>
         </EditForm>
     }
@@ -60,15 +54,21 @@
             <button class="btn btn-primary" type="submit">Submit</button>
         </EditForm>
     }
+    *@
+    /*
     else
     {
-        <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) addingNewTestator = true; }">Tiløj ny testator</button>
-        <button class="btn btn-primary" @onclick="() => Modal.Open(SubmitHeir)">Tiløj ny arving</button>
+        <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
+        <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
     }
+    */
+    <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
+    <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
 }
 else
 {
     // create testator first family-tree member
+    @*
     <EditForm Model="editTestator" OnSubmit="SubmitTestator">
         <label>
             Navn:
@@ -84,21 +84,28 @@ else
         </label>
         <button class="btn btn-primary" type="submit">Submit</button>
     </EditForm>
+    *@
 }
-@* <button class="btn btn-primary" @onclick="() => Modal.Open()">Open Modal</button> *@
-<Modal @ref="Modal"/>
+<PersonModal @ref="personModal"/>
+<TestatorModal @ref="testatorModal"/>
 
 @code {
-    [SupplyParameterFromForm]
     private Testator editTestator { get; set; }
-    [SupplyParameterFromForm]
     private Person editHeir { get; set; }
     
     private bool addingNewTestator = false;
     private bool addingNewHeir = false;
 
-    private Modal Modal = new();
-    
+    private PersonModal personModal = new();
+    private TestatorModal testatorModal = new();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // Opens pop-up for adding testator if none are present is checked each render-cycle
+        if (!Inheritance.GetTestators().Any()) testatorModal.Open(SubmitTestator);
+        base.OnAfterRender(firstRender);
+    }
+
     protected override void OnInitialized()
     {
         editTestator = new();
@@ -112,6 +119,13 @@ else
         addingNewTestator = false;
         editTestator = new();
     }
+    
+    private void SubmitTestator(Testator testator)
+    {
+        Inheritance.AddTestator(testator);
+        addingNewTestator = false;
+        InvokeAsync(StateHasChanged);
+    }
 
     private void SubmitHeir()
     {
@@ -124,7 +138,6 @@ else
     {
         Inheritance.AddHeir(heir);
         addingNewHeir = false;
-        //editHeir = new();
         InvokeAsync(StateHasChanged);
     }
 }
