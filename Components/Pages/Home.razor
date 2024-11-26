@@ -35,7 +35,7 @@
             }
         </div>
 
-        <a href="/overview" class="frontpage-buttons a-buttons">Start ny visning</a>
+        <a @onclick="NavigateToOverview" class="frontpage-buttons a-buttons">Start ny visning</a>
     </div>
 </section>
 
@@ -58,12 +58,7 @@
 
         StateHasChanged();
     }
-}
 
-<button class="btn btn-primary">Import PDF</button>
-<button class="btn btn-primary" @onclick="NavigateToOverview">Start ny visning</button>
-
-@code {
     private void NavigateToOverview()
     {
         NavManager.NavigateTo("/overview");
