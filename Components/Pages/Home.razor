@@ -1,7 +1,7 @@
 ﻿@page "/"
 
-@inject IJSRuntime JSRuntime
-@implements IAsyncDisposable
+@* @inject IJSRuntime JSRuntime
+@implements IAsyncDisposable *@
 
 @rendermode InteractiveServer
 
@@ -62,21 +62,21 @@
         StateHasChanged();
     }
 
-    // This method runs when the page is first rendered
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // Add class to the body element when the page first renders
-            await JSRuntime.InvokeVoidAsync("addClassToBody", "home-page");
-        }
-    }
+    // // This method runs when the page is first rendered
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         // Add class to the body element when the page first renders
+    //         await JSRuntime.InvokeVoidAsync("addClassToBody", "home-page");
+    //     }
+    // }
 
-    // This method runs when the component is disposed (when navigating away from the page)
-    public async ValueTask DisposeAsync()
-    {
-        // Remove the class from the body when navigating away from the page
-        await JSRuntime.InvokeVoidAsync("removeClassFromBody", "home-page");
-    }
+    // // This method runs when the component is disposed (when navigating away from the page)
+    // public async ValueTask DisposeAsync()
+    // {
+    //     // Remove the class from the body when navigating away from the page
+    //     await JSRuntime.InvokeVoidAsync("removeClassFromBody", "home-page");
+    // }
 }
 
