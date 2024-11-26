@@ -8,7 +8,7 @@
 		public List<Person> Parents { get; set; }
 		public decimal Percentage { get; set; }
 		public bool IsAlive { get; set; }
-
+    
 		public Person()
 		{
 			
