@@ -4,8 +4,8 @@
 	{
 		public string Name { get; set; }
 		public DateOnly Birthday { get; set; }
-		public List<Person> Children { get; set; }
-		public List<Person> Parents { get; set; }
+		public List<Person> Children { get; set; } = new();
+		public List<Person> Parents { get; set; } = new();
 		public decimal Percentage { get; set; }
 		public bool IsAlive { get; set; }
 

@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document" > 
         <div class="modal-content">
             <div class="modal-header">
-                @* <h5 class="modal-title">Modal title</h5> *@
+                <h5 class="modal-title">Tilføj Testator</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -23,13 +23,30 @@
                     ErDød?:
                     <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
                 </label>
-                @*
-                    <label>
-                        Relation:
-                        <input></input>
-                    </label>
-                    *@
-                @* <button class="btn btn-primary" type="submit">Submit</button> *@
+                <label>
+                    Children:
+                    <button @onclick="() => editTestator.AddChild(new())">Add child</button>
+                    @foreach (var thing in editTestator.Children)
+                    {
+                        var thing2 = thing;
+                        <InputSelect @bind-value="thing2">
+                            @foreach (var person in _persons)
+                            {
+                                <option value="@person">@person.Name</option>
+                            }
+                        </InputSelect>
+                    }
+                    <InputSelect @bind-value="child">
+                        @foreach (var person in _persons)
+                        {
+                            <option value="@person">@person.Name</option>
+                        }
+                    </InputSelect>
+                </label>
+                <label>
+                    Parents:
+                    @* <InputSelect TValue="Person"></InputSelect> *@
+                </label>
                 @* </EditForm> *@
             </div>
             <div class="modal-footer">
@@ -54,10 +71,14 @@
     //private bool ShowBackdrop = false;
     private Testator editTestator { get; set; }
     private Action<Testator> Submit { get; set; }
+    
+    private Person child { get; set; }
+    private IEnumerable<Person> _persons = Enumerable.Empty<Person>();
 
     protected override void OnParametersSet()
     {
         editTestator = new();
+        child = new();
         base.OnParametersSet();
     }
 
@@ -70,6 +91,7 @@
             //ShowBackdrop = true;
             editTestator = new();
             Submit = submit;
+            _persons = FamilyTree.GetMembers();
             StateHasChanged();
             //InvokeAsync(StateHasChanged);
         }

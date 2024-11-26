@@ -15,7 +15,7 @@
         <div class="p-0 m-0 bg-light border border-dark border-1 rounded-3">
             <p>Name: @heir.Name</p>
         </div>
-    *@
+        *@
     }
     @*
     @if (addingNewTestator)
@@ -62,8 +62,6 @@
         <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
     }
     */
-    <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
-    <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
 }
 else
 {
@@ -86,6 +84,8 @@ else
     </EditForm>
     *@
 }
+<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
+<button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
 <PersonModal @ref="personModal"/>
 <TestatorModal @ref="testatorModal"/>
 
@@ -93,8 +93,10 @@ else
     private Testator editTestator { get; set; }
     private Person editHeir { get; set; }
     
+    /*
     private bool addingNewTestator = false;
     private bool addingNewHeir = false;
+    */
 
     private PersonModal personModal = new();
     private TestatorModal testatorModal = new();
@@ -113,31 +115,35 @@ else
         base.OnInitialized();
     }
 
+    /*
     private void SubmitTestator()
     {
         Inheritance.AddTestator(editTestator);
         addingNewTestator = false;
         editTestator = new();
     }
+    */
     
     private void SubmitTestator(Testator testator)
     {
         Inheritance.AddTestator(testator);
-        addingNewTestator = false;
+        //addingNewTestator = false;
         InvokeAsync(StateHasChanged);
     }
 
+    /*
     private void SubmitHeir()
     {
         Inheritance.AddHeir(editHeir);
         addingNewHeir = false;
         editHeir = new();
     }
+    */
     
     private void SubmitHeir(Person heir)
     {
         Inheritance.AddHeir(heir);
-        addingNewHeir = false;
+        //addingNewHeir = false;
         InvokeAsync(StateHasChanged);
     }
 }
