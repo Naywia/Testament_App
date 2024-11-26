@@ -8,17 +8,15 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    background-attachment: fixed;
 }
 
     body::before {
         content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        position: fixed;
         background: rgba(0, 26, 51, 0.85); /* Blue tint with 30% opacity */
-        z-index: 0; /* Make sure it’s above the background but below the content */
+        height: 100%;
+        width: 100%;
     }
 
 h1, h2, h3, h4 {
