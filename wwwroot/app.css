@@ -12,7 +12,7 @@ body {
 }
 
     body::before {
-        content: ''; 
+        content: '';
         position: fixed;
         background: rgba(0, 26, 51, 0.85); /* Blue tint with 30% opacity */
         height: 100%;
