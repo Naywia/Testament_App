@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager NavManager
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -59,3 +60,12 @@
     }
 }
 
+<button class="btn btn-primary">Import PDF</button>
+<button class="btn btn-primary" @onclick="NavigateToOverview">Start ny visning</button>
+
+@code {
+    private void NavigateToOverview()
+    {
+        NavManager.NavigateTo("/overview");
+    }
+}
