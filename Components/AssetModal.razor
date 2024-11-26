@@ -1,0 +1,98 @@
+﻿@rendermode InteractiveServer
+@* @typeparam TItem *@
+<div class="modal fade @ModalClass" id="thing" tabindex="-1" role="dialog" style="display:@ModalDisplay" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                @* <h5 class="modal-title">Modal title</h5> *@
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @* <EditForm Model="editPerson" OnSubmit="() => Submit(editPerson)"> *@
+                <label>
+                    Navn:
+                    <InputText @bind-value="editPerson.Name"></InputText>
+                </label>
+                <label>
+                    Fødselsdag:
+                    <InputDate TValue="DateOnly" @bind-Value="editPerson.Birthday"></InputDate>
+                </label>
+                <label>
+                    ErDød?:
+                    <InputCheckbox @bind-Value="editPerson.IsAlive"></InputCheckbox>
+                </label>
+                @*
+                    <label>
+                        Relation:
+                        <input></input>
+                    </label>
+                    *@
+                @* <button class="btn btn-primary" type="submit">Submit</button> *@
+                @* </EditForm> *@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="() => { Submit(editPerson); Close(); }">AddItem</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop @ModalClass"></div>
+@*
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop @ModalClass"></div>
+}
+*@
+
+@code {
+    private String ModalDisplay = "none;";
+    private String ModalClass = "visually-hidden";
+    private bool ShowBackdrop = false;
+    private Person editPerson { get; set; }
+    private Testator editTestator { get; set; }
+    private Action<Person> Submit { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        editPerson = new();
+        base.OnParametersSet();
+    }
+
+    public async Task Open(Action<Person> submit)
+    {
+        try
+        {
+            ModalDisplay = "block;";
+            ModalClass = "show";
+            ShowBackdrop = true;
+            editPerson = new();
+            Submit = submit;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async void Close()
+    {
+        try
+        {
+            ModalDisplay = "none;";
+            ModalClass = "visually-hidden";
+            ShowBackdrop = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+}
