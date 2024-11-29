@@ -10,7 +10,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                @* <EditForm Model="editPerson" OnSubmit="() => Submit(editPerson)"> *@
                 <label>
                     Navn:
                     <InputText @bind-value="editPerson.Name"></InputText>
@@ -23,45 +22,42 @@
                     ErDød?:
                     <InputCheckbox @bind-Value="editPerson.IsAlive"></InputCheckbox>
                 </label>
-                @*
                 <label>
-                    Children:
-                    <InputSelect TValue="Person" Assets=""></InputSelect>
-                </label>
-                <label>
-                    Parents:
-                    <InputSelect TValue="Person"></InputSelect>
-                </label>
-                
-                *@
-                <label>
-                    Parents:
-                    @for (int i = 0; i < editPerson.Parents.Count; i++)
+                    Børn:
+                    @foreach (var child in editPerson.Children)
                     {
-                        var index = i;
-                        <p>@editPerson.Parents[i].Name</p>
+                        <p>@child.Name</p>
                     }
-                    <button @onclick="Thing">Add parent</button>
-                    <InputSelect @bind-value="selectedPerson" @onchange="() => { editPerson.AddParent(selectedPerson); }">
-                        @foreach (var person in FamilyTree.GetMembers())
+                    <InputSelect @bind-value="selectedChildName">
+                        @if (selectedChildName == null)
                         {
-                            <option value="@person">@person.Name</option>
+                            <option selected value="">None</option>
+                        }
+                        @foreach (var person in _persons)
+                        {
+                            <option value="@person.Name">@person.Name</option>
                         }
                     </InputSelect>
-                    @*
-                    @foreach (var thing in editPerson.Parents)
-                    {
-                        var thing2 = thing;
-                        <InputSelect @bind-value="thing2">
-                            @foreach (var person in FamilyTree.GetMembers())
-                            {
-                                <option value="@person">@person.Name</option>
-                            }
-                        </InputSelect>
-                    }
-                    *@
+                    <button @onclick="() => { editPerson.AddChild(selectedChild); }">Tilføj barn</button>
                 </label>
-                @* </EditForm> *@
+                <label>
+                    forældre:
+                    @foreach (var parent in editPerson.Parents)
+                    {
+                        <p>@parent.Name</p>
+                    }
+                    <InputSelect @bind-value="selectedParentName">
+                        @if (selectedParentName == null)
+                        {
+                            <option selected value="">None</option>
+                        }
+                        @foreach (var person in _persons)
+                        {
+                            <option value="@person.Name">@person.Name</option>
+                        }
+                    </InputSelect>
+                    <button @onclick="() => { editPerson.AddParent(selectedParent); }">Tilføj forælder</button>
+                </label>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" @onclick="() => { Submit(editPerson); Close(); }">AddItem</button>
@@ -85,12 +81,12 @@
     private bool ShowBackdrop = false;
     private Person editPerson { get; set; }
     private Action<Person> Submit { get; set; }
-    private Person selectedPerson { get; set; }
 
-    public void Thing()
-    {
-        selectedPerson = new();
-    }
+    private IEnumerable<Person> _persons => FamilyTree.GetMembers();
+    private String? selectedParentName { get; set; } = null;
+    private Person? selectedParent => _persons.First(d => d.Name == selectedParentName);
+    private String? selectedChildName { get; set; } = null;
+    private Person? selectedChild => _persons.First(d => d.Name == selectedChildName);
 
     protected override void OnParametersSet()
     {

@@ -24,28 +24,40 @@
                     <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
                 </label>
                 <label>
-                    Children:
-                    <button @onclick="() => editTestator.AddChild(new())">Add child</button>
-                    @foreach (var thing in editTestator.Children)
+                    Børn:
+                    @foreach (var child in editTestator.Children)
                     {
-                        var thing2 = thing;
-                        <InputSelect @bind-value="thing2">
-                            @foreach (var person in _persons)
-                            {
-                                <option value="@person">@person.Name</option>
-                            }
-                        </InputSelect>
+                        <p>@child.Name</p>
                     }
-                    <InputSelect @bind-value="child">
+                    <InputSelect @bind-value="selectedChildName">
+                        @if (selectedChildName == null)
+                        {
+                            <option selected value="">None</option>
+                        }
                         @foreach (var person in _persons)
                         {
-                            <option value="@person">@person.Name</option>
+                            <option value="@person.Name">@person.Name</option>
                         }
                     </InputSelect>
+                    <button @onclick="() => { editTestator.AddChild(selectedChild); }">Tilføj barn</button>
                 </label>
                 <label>
-                    Parents:
-                    @* <InputSelect TValue="Person"></InputSelect> *@
+                    forældre:
+                    @foreach (var parent in editTestator.Parents)
+                    {
+                        <p>@parent.Name</p>
+                    }
+                    <InputSelect @bind-value="selectedParentName">
+                        @if (selectedParentName == null)
+                        {
+                            <option selected value="">None</option>
+                        }
+                        @foreach (var person in _persons)
+                        {
+                            <option value="@person.Name">@person.Name</option>
+                        }
+                    </InputSelect>
+                    <button @onclick="() => { editTestator.AddParent(selectedParent); }">Tilføj forælder</button>
                 </label>
                 @* </EditForm> *@
             </div>
@@ -71,14 +83,16 @@
     //private bool ShowBackdrop = false;
     private Testator editTestator { get; set; }
     private Action<Testator> Submit { get; set; }
-    
-    private Person child { get; set; }
-    private IEnumerable<Person> _persons = Enumerable.Empty<Person>();
 
+    private IEnumerable<Person> _persons => FamilyTree.GetMembers();
+    private String? selectedParentName { get; set; } = null;
+    private Person? selectedParent => _persons.First(d => d.Name == selectedParentName);
+    private String? selectedChildName { get; set; } = null;
+    private Person? selectedChild => _persons.First(d => d.Name == selectedChildName);
+    
     protected override void OnParametersSet()
     {
         editTestator = new();
-        child = new();
         base.OnParametersSet();
     }
 
@@ -91,7 +105,6 @@
             //ShowBackdrop = true;
             editTestator = new();
             Submit = submit;
-            _persons = FamilyTree.GetMembers();
             StateHasChanged();
             //InvokeAsync(StateHasChanged);
         }

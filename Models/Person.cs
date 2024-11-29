@@ -16,12 +16,16 @@
 
 		public void AddChild(Person child)
 		{
+			// Console.WriteLine($"Add child with name: {child.Name}");
 			Children.Add(child);
+			child.Parents.Add(this);
 		}
 
 		public void AddParent(Person parent)
 		{
+			// Console.WriteLine($"Add parent with name: {parent.Name}");
 			Parents.Add(parent);
+			parent.Children.Add(this);
 		}
 
 		public List<Person> GetAncestors()
