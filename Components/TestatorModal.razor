@@ -1,5 +1,4 @@
 @rendermode InteractiveServer
-@* @typeparam TItem *@
 <div class="modal fade @ModalClass" id="thing" tabindex="-1" role="dialog" style="display:@ModalDisplay" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document" > 
         <div class="modal-content">
@@ -10,7 +9,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                @* <EditForm Model="editPerson" OnSubmit="() => Submit(editPerson)"> *@
                 <label>
                     Navn:
                     <InputText @bind-value="editTestator.Name"></InputText>
@@ -39,7 +37,7 @@
                             <option value="@person.Name">@person.Name</option>
                         }
                     </InputSelect>
-                    <button @onclick="() => { editTestator.AddChild(selectedChild); }">Tilføj barn</button>
+                    <button @onclick="() => editTestator.AddChild(selectedChild)">Tilføj barn</button>
                 </label>
                 <label>
                     forældre:
@@ -57,9 +55,8 @@
                             <option value="@person.Name">@person.Name</option>
                         }
                     </InputSelect>
-                    <button @onclick="() => { editTestator.AddParent(selectedParent); }">Tilføj forælder</button>
+                    <button @onclick="() => editTestator.AddParent(selectedParent)">Tilføj forælder</button>
                 </label>
-                @* </EditForm> *@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" @onclick="() => { Submit(editTestator); Close(); }">AddItem</button>
@@ -98,15 +95,14 @@
 
     public void Open(Action<Testator> submit)
     {
+        ModalDisplay = "block;";
+        ModalClass = "show";
+        //ShowBackdrop = true;
+        editTestator = new();
+        Submit = submit;
         try
         {
-            ModalDisplay = "block;";
-            ModalClass = "show";
-            //ShowBackdrop = true;
-            editTestator = new();
-            Submit = submit;
-            StateHasChanged();
-            //InvokeAsync(StateHasChanged);
+            InvokeAsync(StateHasChanged);
         }
         catch (Exception e)
         {
@@ -117,11 +113,11 @@
 
     private void Close()
     {
+        ModalDisplay = "none;";
+        ModalClass = "visually-hidden";
+        //ShowBackdrop = false;
         try
         {
-            ModalDisplay = "none;";
-            ModalClass = "visually-hidden";
-            //ShowBackdrop = false;
             InvokeAsync(StateHasChanged);
         }
         catch (Exception e)

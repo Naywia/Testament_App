@@ -4,11 +4,6 @@ public class Testator : Person
 {
     //private List<Asset> separateAssets;
 
-    public Testator()
-    {
-        
-    }
-    
     //public void AddAsset(Asset asset)
     //{
     //    separateAssets.Add(asset);
