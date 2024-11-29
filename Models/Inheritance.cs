@@ -5,6 +5,7 @@ public static class Inheritance
     //private List<Asset>
     private static List<Testator> _testators = new();
     private static List<Person> _heirs = new();
+    private static List<Beneficiary> _beneficiaries = new();
     //private static List<Beneficiary> _testators = new();
 
     public static void AddTestator(Testator testator)
@@ -22,6 +23,12 @@ public static class Inheritance
     {
         _heirs.Add(heir);
         FamilyTree.AddMember(heir);
+    }
+
+    public static void AddBeneficiary(Beneficiary heir)
+    {
+        _beneficiaries.Add(heir);
+        // SOMEWHERE TO ADD AND SHOW BENEFICIARIES
     }
     
     public static Person[] GetHeirs()

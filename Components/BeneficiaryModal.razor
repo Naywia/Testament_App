@@ -1,0 +1,73 @@
+﻿@rendermode InteractiveServer
+@* @typeparam TItem *@
+<div class="modal fade @ModalClass" id="thing" tabindex="-1" role="dialog" style="display:@ModalDisplay" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label>
+                    Navn:
+                    <InputText @bind-value="editBeneficiary.Name"></InputText>
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="() => { Submit(editBeneficiary); Close(); }">AddItem</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop @ModalClass"></div>
+
+@code {
+    private String ModalDisplay = "none;";
+    private String ModalClass = "visually-hidden";
+    private bool ShowBackdrop = false;
+    private Beneficiary editBeneficiary { get; set; }
+    private Action<Beneficiary> Submit { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        editBeneficiary = new();
+        base.OnParametersSet();
+    }
+
+    public async Task Open(Action<Beneficiary> submit)
+    {
+        try
+        {
+            ModalDisplay = "block;";
+            ModalClass = "show";
+            ShowBackdrop = true;
+            editBeneficiary = new();
+            Submit = submit;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async void Close()
+    {
+        try
+        {
+            ModalDisplay = "none;";
+            ModalClass = "visually-hidden";
+            ShowBackdrop = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+}

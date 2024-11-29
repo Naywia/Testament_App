@@ -55,15 +55,16 @@
         </EditForm>
     }
     *@
-    /*
-    else
-    {
+        /*
+        else
+        {
         <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
         <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
     }
     */
     <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
     <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
+    <button class="btn btn-primary" @onclick="() => beneficiaryModal.Open(SubmitBeneficiary)">Tiløj begunstriget</button>
 }
 else
 {
@@ -92,12 +93,13 @@ else
 @code {
     private Testator editTestator { get; set; }
     private Person editHeir { get; set; }
-    
+
     private bool addingNewTestator = false;
     private bool addingNewHeir = false;
 
     private PersonModal personModal = new();
     private TestatorModal testatorModal = new();
+    private BeneficiaryModal beneficiaryModal = new();
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -134,9 +136,16 @@ else
         editHeir = new();
     }
     
-    private void SubmitHeir(Person heir)
+    private void SubmitHeir(Person person)
     {
-        Inheritance.AddHeir(heir);
+        Inheritance.AddHeir(person);
+        addingNewHeir = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void SubmitBeneficiary(Beneficiary beneficiary)
+    {
+        Inheritance.AddBeneficiary(beneficiary);
         addingNewHeir = false;
         InvokeAsync(StateHasChanged);
     }
