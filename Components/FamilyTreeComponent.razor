@@ -16,6 +16,28 @@
     <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
     <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
     <button class="btn btn-primary" @onclick="() => assetModal.Open(SubmitAsset)">Tiløj ny asset</button>
+}
+else
+{
+    // create testator first family-tree member
+    @*
+    <EditForm Model="editTestator" OnSubmit="SubmitTestator">
+        <label>
+            Navn:
+            <InputText @bind-value="editTestator.Name"></InputText>
+        </label>
+        <label>
+            Fødselsdag:
+            <InputDate TValue="DateOnly" @bind-Value="editTestator.Birthday"></InputDate>
+        </label>
+        <label>
+            ErDød?:
+            <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
+        </label>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </EditForm>
+    *@
+}
 <PersonModal @ref="personModal"/>
 <TestatorModal @ref="testatorModal"/>
 <AssetModal @ref="assetModal"/>
@@ -24,6 +46,10 @@
     private Testator editTestator { get; set; }
     private Person editHeir { get; set; }
     private Asset editAsset { get; set; }
+    
+    private bool addingNewTestator = false;
+    private bool addingNewHeir = false;
+    private bool addingNewAsset = false;
 
     private PersonModal personModal = new();
     private TestatorModal testatorModal = new();

@@ -2,7 +2,7 @@ namespace Testament_App.Models;
 
 public class Testator : Person
 {
-    private List<Asset> separateAssets;
+    private List<Asset> separateAssets = new();
 
     public Testator()
     {
