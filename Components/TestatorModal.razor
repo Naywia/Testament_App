@@ -1,16 +1,14 @@
 @rendermode InteractiveServer
-@* @typeparam TItem *@
 <div class="modal fade @ModalClass" id="thing" tabindex="-1" role="dialog" style="display:@ModalDisplay" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document" > 
         <div class="modal-content">
             <div class="modal-header">
-                @* <h5 class="modal-title">Modal title</h5> *@
+                <h5 class="modal-title">Tilføj Testator</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                @* <EditForm Model="editPerson" OnSubmit="() => Submit(editPerson)"> *@
                 <label>
                     Navn:
                     <InputText @bind-value="editTestator.Name"></InputText>
@@ -23,14 +21,42 @@
                     ErDød?:
                     <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
                 </label>
-                @*
-                    <label>
-                        Relation:
-                        <input></input>
-                    </label>
-                    *@
-                @* <button class="btn btn-primary" type="submit">Submit</button> *@
-                @* </EditForm> *@
+                <label>
+                    Børn:
+                    @foreach (var child in editTestator.Children)
+                    {
+                        <p>@child.Name</p>
+                    }
+                    <InputSelect @bind-value="selectedChildName">
+                        @if (selectedChildName == null)
+                        {
+                            <option selected value="">None</option>
+                        }
+                        @foreach (var person in _persons)
+                        {
+                            <option value="@person.Name">@person.Name</option>
+                        }
+                    </InputSelect>
+                    <button @onclick="() => editTestator.AddChild(selectedChild)">Tilføj barn</button>
+                </label>
+                <label>
+                    forældre:
+                    @foreach (var parent in editTestator.Parents)
+                    {
+                        <p>@parent.Name</p>
+                    }
+                    <InputSelect @bind-value="selectedParentName">
+                        @if (selectedParentName == null)
+                        {
+                            <option selected value="">None</option>
+                        }
+                        @foreach (var person in _persons)
+                        {
+                            <option value="@person.Name">@person.Name</option>
+                        }
+                    </InputSelect>
+                    <button @onclick="() => editTestator.AddParent(selectedParent)">Tilføj forælder</button>
+                </label>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" @onclick="() => { Submit(editTestator); Close(); }">AddItem</button>
@@ -55,6 +81,12 @@
     private Testator editTestator { get; set; }
     private Action<Testator> Submit { get; set; }
 
+    private IEnumerable<Person> _persons => FamilyTree.GetMembers();
+    private String? selectedParentName { get; set; } = null;
+    private Person? selectedParent => _persons.First(d => d.Name == selectedParentName);
+    private String? selectedChildName { get; set; } = null;
+    private Person? selectedChild => _persons.First(d => d.Name == selectedChildName);
+    
     protected override void OnParametersSet()
     {
         editTestator = new();
@@ -63,15 +95,14 @@
 
     public void Open(Action<Testator> submit)
     {
+        ModalDisplay = "block;";
+        ModalClass = "show";
+        //ShowBackdrop = true;
+        editTestator = new();
+        Submit = submit;
         try
         {
-            ModalDisplay = "block;";
-            ModalClass = "show";
-            //ShowBackdrop = true;
-            editTestator = new();
-            Submit = submit;
-            StateHasChanged();
-            //InvokeAsync(StateHasChanged);
+            InvokeAsync(StateHasChanged);
         }
         catch (Exception e)
         {
@@ -82,11 +113,11 @@
 
     private void Close()
     {
+        ModalDisplay = "none;";
+        ModalClass = "visually-hidden";
+        //ShowBackdrop = false;
         try
         {
-            ModalDisplay = "none;";
-            ModalClass = "visually-hidden";
-            //ShowBackdrop = false;
             InvokeAsync(StateHasChanged);
         }
         catch (Exception e)
