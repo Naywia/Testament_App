@@ -28,4 +28,8 @@ public static class Inheritance
     {
         return _heirs.ToArray();
     }
+    public static void AddAsset(Asset asset)
+    {
+        assets.Add(asset);
+    }
 }
