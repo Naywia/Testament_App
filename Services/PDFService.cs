@@ -3,8 +3,8 @@ using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using System.Text.Json;
-using Testament_App.Models;
+using System.Text;
+
 
 namespace Testament_App.Services
 {
@@ -24,10 +24,16 @@ namespace Testament_App.Services
             _boldFont = PdfFontFactory.CreateFont("Helvetica-Bold");
         }
 
-        public byte[] GeneratePdf(string familyTreeJson)
+        public byte[] GeneratePdf(string familyTreeJson, string password = "test")
         {
+            var writerProperties = new WriterProperties()
+                    .SetStandardEncryption(
+                        userPassword: Encoding.UTF8.GetBytes(password),                // User password
+                        ownerPassword: null,              // Owner password (has more permissions)
+                        EncryptionConstants.ALLOW_PRINTING,        // Permissions (you can change these)
+                        EncryptionConstants.ENCRYPTION_AES_128);
             using var stream = new MemoryStream();
-            using (var writer = new PdfWriter(stream))
+            using (var writer = new PdfWriter(stream, writerProperties))
             {
                 using var pdf = new PdfDocument(writer);
                 // Add metadata
