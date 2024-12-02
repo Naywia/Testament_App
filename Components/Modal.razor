@@ -1,0 +1,104 @@
+@rendermode InteractiveServer
+<div class="modal fade @ModalClass" id="thing" tabindex="-1" role="dialog" style="display:@ModalDisplay" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" > 
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tilføj thing</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if (selectedType != null)
+                {
+                    <DynamicComponent Type="selectedType" @ref="_dynamicComponent"/>
+                }
+            </div>
+            <div class="modal-footer">
+                @* <button type="button" class="btn btn-primary" @onclick="() => { Submit(editItem); Close(); }">AddItem</button> *@
+                <button type="button" class="btn btn-primary" @onclick="Submit">AddItem</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop @ModalClass"></div>
+@*
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop @ModalClass"></div>
+}
+*@
+
+@code {
+    private String ModalDisplay = "none;";
+    private String ModalClass = "visually-hidden";
+    //private bool ShowBackdrop = false;
+
+    //private readonly Dictionary<String, Type> components = new()
+    //{
+    //    [nameof(PersonEdit)] = typeof(PersonEdit),
+    //    [nameof(TestatorEdit)] = typeof(TestatorEdit),
+    //};
+    private Type selectedType;
+    //private String selectedType;
+    private DynamicComponent _dynamicComponent;
+    
+    public async Task Open(Type componentType)
+    {
+        ModalDisplay = "block;";
+        ModalClass = "show";
+        //ShowBackdrop = true;
+        //selectedType = components[componentType];
+        selectedType = componentType;
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async Task Close()
+    {
+        ModalDisplay = "none;";
+        ModalClass = "visually-hidden";
+        //ShowBackdrop = false;
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async Task Submit()
+    {
+        // TODO: Change type in type cast depending on selectedType variable
+        Console.WriteLine($"Selected Type: {selectedType}");
+        //if (selectedType is PersonEdit)
+        //{
+        //    Console.WriteLine($"Submitting Heir");
+        //    (_dynamicComponent.Instance as PersonEdit)?.Submit();
+        //}
+        //else if (selectedType is TestatorEdit)
+        //{
+        //    Console.WriteLine($"Submitting Testator");
+        //    (_dynamicComponent.Instance as TestatorEdit)?.Submit();
+        //}
+        //else
+        //{
+        //    Console.WriteLine($"Unsupported type found during submission");
+        //}
+        (_dynamicComponent.Instance as PersonEdit)?.Submit();
+        await InvokeAsync(StateHasChanged);
+        await Close();
+    }
+}

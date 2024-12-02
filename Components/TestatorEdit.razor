@@ -1,0 +1,72 @@
+@rendermode InteractiveServer
+<h3>TestatorCreate</h3>
+<label>
+    Navn:
+    <InputText @bind-value="editTestator.Name"></InputText>
+</label>
+<label>
+    Fødselsdag:
+    <InputDate TValue="DateOnly" @bind-Value="editTestator.Birthday"></InputDate>
+</label>
+<label>
+    ErDød?:
+    <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
+</label>
+<label>
+    Børn:
+    @foreach (var child in editTestator.Children)
+    {
+        <p>@child.Name</p>
+    }
+    <InputSelect @bind-value="selectedChildName">
+        @if (selectedChildName == null)
+        {
+            <option selected value="">None</option>
+        }
+        @foreach (var person in _persons)
+        {
+            <option value="@person.Name">@person.Name</option>
+        }
+    </InputSelect>
+    <button @onclick="() => editTestator.AddChild(selectedChild)">Tilføj barn</button>
+</label>
+<label>
+    forældre:
+    @foreach (var parent in editTestator.Parents)
+    {
+        <p>@parent.Name</p>
+    }
+    <InputSelect @bind-value="selectedParentName">
+        @if (selectedParentName == null)
+        {
+            <option selected value="">None</option>
+        }
+        @foreach (var person in _persons)
+        {
+            <option value="@person.Name">@person.Name</option>
+        }
+    </InputSelect>
+    <button @onclick="() => editTestator.AddParent(selectedParent)">Tilføj forælder</button>
+</label>
+
+
+@code {
+    private Testator editTestator { get; set; }
+    private IEnumerable<Person> _persons => FamilyTree.GetMembers();
+    private String? selectedParentName { get; set; } = null;
+    private Person? selectedParent => _persons.First(d => d.Name == selectedParentName);
+    private String? selectedChildName { get; set; } = null;
+    private Person? selectedChild => _persons.First(d => d.Name == selectedChildName);
+    
+    protected override void OnParametersSet()
+    {
+        editTestator = new();
+        base.OnParametersSet();
+    }
+    
+    public async Task Submit()
+    {
+        Inheritance.AddTestator(editTestator);
+        await InvokeAsync(StateHasChanged);
+    }
+}

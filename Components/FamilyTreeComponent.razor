@@ -13,17 +13,22 @@
         <p class="border border-dark border-1 rounded-3" style="width: 280px;">Name: @heir.Name</p>
     }
 }
-<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
+@* <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button> *@
+<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit)); }">Tiløj ny testator</button>
 <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
 <PersonModal @ref="personModal"/>
 <TestatorModal @ref="testatorModal"/>
+@* <button class="btn btn-primary" @onclick="() => modal.Open(nameof(PersonEdit))">Tiløj test</button> *@
+<button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit))">Tiløj test</button>
+<Modal @ref="modal"/>
 
 @code {
-    private Testator editTestator { get; set; }
-    private Person editHeir { get; set; }
+    //private Testator editTestator { get; set; }
+    //private Person editHeir { get; set; }
     
     private PersonModal personModal = new();
     private TestatorModal testatorModal = new();
+    private Modal modal = new();
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -34,8 +39,8 @@
 
     protected override void OnInitialized()
     {
-        editTestator = new();
-        editHeir = new();
+        //editTestator = new();
+        //editHeir = new();
         base.OnInitialized();
     }
 
@@ -44,7 +49,7 @@
         Inheritance.AddTestator(testator);
         InvokeAsync(StateHasChanged);
     }
-
+    
     private void SubmitHeir(Person heir)
     {
         Inheritance.AddHeir(heir);
