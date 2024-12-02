@@ -1,0 +1,73 @@
+@rendermode InteractiveServer
+<h3>PersonCreate</h3>
+<div>
+    <label>
+        Navn:
+        <InputText @bind-value="editPerson.Name"></InputText>
+    </label>
+    <label>
+        Fødselsdag:
+        <InputDate TValue="DateOnly" @bind-Value="editPerson.Birthday"></InputDate>
+    </label>
+    <label>
+        ErDød?:
+        <InputCheckbox @bind-Value="editPerson.IsAlive"></InputCheckbox>
+    </label>
+    <label>
+        Børn:
+        @foreach (var child in editPerson.Children)
+        {
+            <p>@child.Name</p>
+        }
+        <InputSelect @bind-value="selectedChildName">
+            @if (selectedChildName == null)
+            {
+                <option selected value="">None</option>
+            }
+            @foreach (var person in _persons)
+            {
+                <option value="@person.Name">@person.Name</option>
+            }
+        </InputSelect>
+        <button @onclick="() => editPerson.AddChild(selectedChild)">Tilføj barn</button>
+    </label>
+    <label>
+        forældre:
+        @foreach (var parent in editPerson.Parents)
+        {
+            <p>@parent.Name</p>
+        }
+        <InputSelect @bind-value="selectedParentName">
+            @if (selectedParentName == null)
+            {
+                <option selected value="">None</option>
+            }
+            @foreach (var person in _persons)
+            {
+                <option value="@person.Name">@person.Name</option>
+            }
+        </InputSelect>
+        <button @onclick="() => editPerson.AddParent(selectedParent)">Tilføj forælder</button>
+    </label>
+</div>
+
+@code {
+    private Person editPerson { get; set; }
+    private IEnumerable<Person> _persons => FamilyTree.GetMembers();
+    private String? selectedParentName { get; set; } = null;
+    private Person? selectedParent => _persons.First(d => d.Name == selectedParentName);
+    private String? selectedChildName { get; set; } = null;
+    private Person? selectedChild => _persons.First(d => d.Name == selectedChildName);
+    
+    protected override void OnParametersSet()
+    {
+        editPerson = new();
+        base.OnParametersSet();
+    }
+
+    public async Task Submit()
+    {
+        Inheritance.AddHeir(editPerson);
+        await InvokeAsync(StateHasChanged);
+    }
+}
