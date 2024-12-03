@@ -59,7 +59,7 @@
                 </label>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @onclick="() => { Submit(editPerson); Close(); }">AddItem</button>
+                <button type="button" class="btn btn-primary" @onclick="() => { Command(editPerson); Close(); }">AddItem</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
             </div>
         </div>
@@ -79,7 +79,7 @@
     private String ModalClass = "visually-hidden";
     //private bool ShowBackdrop = false;
     private Person editPerson { get; set; }
-    private Action<Person> Submit { get; set; }
+    private Action<Person> Command { get; set; }
 
     private IEnumerable<Person> _persons => FamilyTree.GetMembers();
     private String? selectedParentName { get; set; } = null;
@@ -93,13 +93,31 @@
         base.OnParametersSet();
     }
 
-    public async Task Open(Action<Person> submit)
+    public async void Open(Action<Person> submit)
     {
         ModalDisplay = "block;";
         ModalClass = "show";
         //ShowBackdrop = true;
         editPerson = new();
-        Submit = submit;
+        Command = submit;
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    public async void Open(Action<Person> edit, Person heir)
+    {
+        ModalDisplay = "block;";
+        ModalClass = "show";
+        //ShowBackdrop = true;
+        editPerson = heir;
+        Command = edit;
         try
         {
             await InvokeAsync(StateHasChanged);

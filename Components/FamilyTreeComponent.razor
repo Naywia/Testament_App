@@ -5,12 +5,12 @@
     <h3>Testators:</h3>
     @foreach (var testator in Inheritance.GetTestators())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;">Name: @testator.Name</p>
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => testatorModal.Open(EditTestator, testator)">Name: @testator.Name</p>
     }
     <h3>Heirs:</h3>
     @foreach (var heir in Inheritance.GetHeirs())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;">Name: @heir.Name</p>
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => personModal.Open(EditHeir, heir)">Name: @heir.Name</p>
     }
 }
 <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
@@ -19,9 +19,6 @@
 <TestatorModal @ref="testatorModal"/>
 
 @code {
-    private Testator editTestator { get; set; }
-    private Person editHeir { get; set; }
-    
     private PersonModal personModal = new();
     private TestatorModal testatorModal = new();
 
@@ -32,16 +29,19 @@
         base.OnAfterRender(firstRender);
     }
 
-    protected override void OnInitialized()
+    private void EditTestator(Testator testator)
     {
-        editTestator = new();
-        editHeir = new();
-        base.OnInitialized();
+        InvokeAsync(StateHasChanged);
     }
 
     private void SubmitTestator(Testator testator)
     {
         Inheritance.AddTestator(testator);
+        InvokeAsync(StateHasChanged);
+    }
+    
+    private void EditHeir(Person heir)
+    {
         InvokeAsync(StateHasChanged);
     }
 
