@@ -59,6 +59,10 @@
                 </label>
             </div>
             <div class="modal-footer">
+                @if (CommandDelete != null)
+                {
+                     <button type="button" class="btn btn-warning" @onclick="() => { CommandDelete(editPerson); Close(); }">Fjern arving</button> 
+                }
                 <button type="button" class="btn btn-primary" @onclick="() => { Command(editPerson); Close(); }">AddItem</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
             </div>
@@ -79,7 +83,8 @@
     private String ModalClass = "visually-hidden";
     //private bool ShowBackdrop = false;
     private Person editPerson { get; set; }
-    private Action<Person> Command { get; set; }
+    private Action<Person>? Command { get; set; }
+    private Action<Person>? CommandDelete { get; set; }
 
     private IEnumerable<Person> _persons => FamilyTree.GetMembers();
     private String? selectedParentName { get; set; } = null;
@@ -111,13 +116,14 @@
         }
     }
     
-    public async void Open(Action<Person> edit, Person heir)
+    public async void Open(Action<Person> edit, Action<Person> delete, Person heir)
     {
         ModalDisplay = "block;";
         ModalClass = "show";
         //ShowBackdrop = true;
         editPerson = heir;
         Command = edit;
+        CommandDelete = delete;
         try
         {
             await InvokeAsync(StateHasChanged);
@@ -134,14 +140,16 @@
         ModalDisplay = "none;";
         ModalClass = "visually-hidden";
         //ShowBackdrop = false;
-        try
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        Command = null;
+        CommandDelete = null;
+        //try
+        //{
+        //    await InvokeAsync(StateHasChanged);
+        //}
+        //catch (Exception e)
+        //{
+        //    Console.WriteLine(e);
+        //    throw;
+        //}
     }
 }

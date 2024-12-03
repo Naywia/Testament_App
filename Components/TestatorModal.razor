@@ -59,6 +59,10 @@
                 </label>
             </div>
             <div class="modal-footer">
+                @if (CommandDelete != null)
+                {
+                    <button type="button" class="btn btn-warning" @onclick="() => { CommandDelete(editTestator); Close(); }">Fjern arvelader</button>
+                }
                 <button type="button" class="btn btn-primary" @onclick="() => { Command(editTestator); Close(); }">AddItem</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
             </div>
@@ -79,7 +83,8 @@
     private String ModalClass = "visually-hidden";
     //private bool ShowBackdrop = false;
     private Testator editTestator { get; set; }
-    private Action<Testator> Command { get; set; }
+    private Action<Testator>? Command { get; set; }
+    private Action<Testator>? CommandDelete { get; set; }
 
     private IEnumerable<Person> _persons => FamilyTree.GetMembers();
     private String? selectedParentName { get; set; } = null;
@@ -90,6 +95,7 @@
     protected override void OnParametersSet()
     {
         editTestator = new();
+        CommandDelete = null;
         base.OnParametersSet();
     }
 
@@ -111,13 +117,14 @@
         }
     }
     
-    public async void Open(Action<Testator> edit, Testator testator)
+    public async void Open(Action<Testator> edit, Action<Testator> delete, Testator testator)
     {
         ModalDisplay = "block;";
         ModalClass = "show";
         //ShowBackdrop = true;
         editTestator = testator;
         Command = edit;
+        CommandDelete = delete;
         try
         {
             await InvokeAsync(StateHasChanged);
@@ -134,14 +141,16 @@
         ModalDisplay = "none;";
         ModalClass = "visually-hidden";
         //ShowBackdrop = false;
-        try
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        Command = null;
+        CommandDelete = null;
+        //try
+        //{
+        //    await InvokeAsync(StateHasChanged);
+        //}
+        //catch (Exception e)
+        //{
+        //    Console.WriteLine(e);
+        //    throw;
+        //}
     }
 }
