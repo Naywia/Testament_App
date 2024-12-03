@@ -15,15 +15,15 @@
 			return Members;
 		}
 
+		public static void RemoveMember(Person person)
+		{
+			Members.Remove(person);
+		}
+
 		public static void AddMarriage(Marriage marriage)
 		{
 			Marriages.Add(marriage);
 		}
-
-		//public Person FindPersonById(Guid id)
-		//{
-		//	return Members.FirstOrDefault(person => person.Id == id);
-		//}
 
 		//public TreeGraphStructure GetFamilyTreeAsGraph()
 		//{
