@@ -1,3 +1,4 @@
+using MudBlazor.Services;
 using Testament_App.Components;
 
 namespace Testament_App
@@ -11,6 +12,8 @@ namespace Testament_App
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+            builder.Services.AddMudServices();
 
             var app = builder.Build();
 

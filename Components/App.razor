@@ -7,7 +7,7 @@
     <base href="/" />
 
     @* Stylesheets *@
-    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    @* <link rel="stylesheet" href="bootstrap/bootstrap.min.css" /> *@
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="Testament_App.styles.css" />
 
@@ -26,12 +26,18 @@
     @* Javascript *@
     <script src="js/scripts.js"></script>
 
+    @* MudBlazor *@
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+
     <HeadOutlet />
 </head>
 
 <body>
     <Routes />
     <script src="_framework/blazor.web.js"></script>
+    @* MudBlazor *@
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 </body>
 
 </html>
