@@ -30,6 +30,11 @@ public static class Inheritance
         _beneficiaries.Add(heir);
         // SOMEWHERE TO ADD AND SHOW BENEFICIARIES
     }
+
+    public static Beneficiary[] GetBeneficiaries()
+    {
+        return _beneficiaries.ToArray();
+    }
     
     public static Person[] GetHeirs()
     {
