@@ -74,26 +74,6 @@ namespace Testament_App.Services
             return stream.ToArray();
         }
 
-        private void AddCoverPage(Document document)
-        {
-            // Set the text color to white
-            var whiteColor = ColorConstants.WHITE;
-
-            document.Add(new Paragraph("Arvefordeleren")
-                .SetFontSize(36)
-                .SetFont(_headingFont)
-                .SetFontColor(whiteColor) // Set the font color to white
-                .SetTextAlignment(TextAlignment.CENTER));
-
-            document.Add(new Paragraph($"Lavet d. {DateTime.Now:dd MMMM yyyy}")
-                .SetFontSize(24)
-                .SetFont(_bodyFont)
-                .SetFontColor(whiteColor) // Set the font color to white
-                .SetTextAlignment(TextAlignment.CENTER));
-
-            document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE)); // Move to the next page
-        }
-
         private PdfDocument CreateCoverPage(PdfWriter writer)
         {
             // Set the page size to standard A4
@@ -151,7 +131,25 @@ namespace Testament_App.Services
             return pdf;
         }
 
+        private void AddCoverPage(Document document)
+        {
+            // Set the text color to white
+            var whiteColor = ColorConstants.WHITE;
 
+            document.Add(new Paragraph("Arvefordeleren")
+                .SetFontSize(36)
+                .SetFont(_headingFont)
+                .SetFontColor(whiteColor) // Set the font color to white
+                .SetTextAlignment(TextAlignment.CENTER));
+
+            document.Add(new Paragraph($"Lavet d. {DateTime.Now:dd MMMM yyyy}")
+                .SetFontSize(24)
+                .SetFont(_bodyFont)
+                .SetFontColor(whiteColor) // Set the font color to white
+                .SetTextAlignment(TextAlignment.CENTER));
+
+            document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE)); // Move to the next page
+        }
 
         private void AddFamilyTree(Document document)
         {
