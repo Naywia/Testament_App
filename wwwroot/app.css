@@ -70,3 +70,22 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+
+
+/******** TEST ********/
+.test-family-tree {
+    font-family: Arial, sans-serif;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+    .test-family-tree h2 {
+        color: #007BFF;
+    }
+
+    .test-family-tree p {
+        margin: 5px 0;
+    }

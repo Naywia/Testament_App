@@ -1,4 +1,5 @@
-﻿using iText.IO.Font;
+﻿using iText.Html2pdf;
+using iText.IO.Font;
 using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Font;
@@ -6,6 +7,7 @@ using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas;
 using iText.Kernel.Pdf.Extgstate;
+using iText.Kernel.Utils;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
@@ -153,12 +155,60 @@ namespace Testament_App.Services
 
         private void AddFamilyTree(Document document)
         {
+
             document.Add(new Paragraph("Stamtræ")
-                .SetFontSize(18)
+            .SetFontSize(18)
                 .SetFont(_headingFont));
 
+            try
+            {
+                // Fetch html
+                var htmlContent = FetchWebPageContent("https://localhost:7032/familytree").Result;
 
-            document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE)); // Move to the next page
+                // Convert the web page content to a PDF and write to the MemoryStream
+                ConverterProperties converterProperties = new();
+
+                IList<IElement> elements = HtmlConverter.ConvertToElements(htmlContent, converterProperties);
+
+                foreach (IElement element in elements)
+                {
+                    if (element is IBlockElement blockElement)
+                    {
+                        document.Add(blockElement);
+                    }
+                }
+                document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message.ToString());
+            }
+        }
+
+        async Task<string> FetchWebPageContent(string url)
+        {
+            // Convert the memory stream to a string.
+            //string htmlContent;
+
+            HttpClient client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var response = client.Send(request);
+
+            //var responseStream = response.Content.ReadAsStream();
+            //using var memoryStream = new MemoryStream();
+            //responseStream.CopyTo(memoryStream);
+
+            //// Reset the position of the memory stream to the beginning before reading it.
+            //memoryStream.Position = 0;
+
+            //using (var reader = new StreamReader(memoryStream))
+            //{
+            //    htmlContent = reader.ReadToEnd();
+            //}
+
+            return await response.Content.ReadAsStringAsync();
+
+            //return htmlContent;
         }
     }
 }
