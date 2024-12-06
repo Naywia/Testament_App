@@ -24,7 +24,20 @@
 
                 <label>
                     Relation:
-                    <InputSelect @bind-Value=""></InputSelect>
+
+                    <InputSelect @bind-Value="selectedTestatorName">
+                        @if (selectedTestatorName == null)
+                        {
+                            <option value="">none</option>
+                        }
+
+                        @foreach (var testator in _testators)
+                        {
+                            <option value="@testator.Name">@testator.Name</option>
+                        }
+
+                    </InputSelect>
+                    <button @onclick="()=> selectedTestator.AddAsset(editAsset)">Tilføj asset</button>
                 </label>
 
             </div>
@@ -50,6 +63,11 @@
     private bool ShowBackdrop = false;
     private Asset editAsset { get; set; }
     private Testator editTestator { get; set; }
+    private IEnumerable<Testator> _testators => Inheritance.GetTestators();
+
+    private String? selectedTestatorName { get; set; } = null;
+    private Testator selectedTestator => _testators.First(t => t.Name == selectedTestatorName);
+    
     private Action<Asset> Submit { get; set; }
 
     protected override void OnParametersSet()

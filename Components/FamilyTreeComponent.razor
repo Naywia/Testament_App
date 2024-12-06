@@ -5,51 +5,34 @@
     <h3>Testators:</h3>
     @foreach (var testator in Inheritance.GetTestators())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => testatorModal.Open(EditTestator, DeleteTestator, testator)">Name: @testator.Name</p>
+        <div class="d-flex">
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;">Name: @testator.Name</p>
+            @foreach (var asset in testator.GetAssets()) 
+            {
+                <p class="border border-dark border-1 rounded-3" style="width: 100px;">Asset: @asset.Name </p>
+            }
+        </div>
     }
+
     <h3>Heirs:</h3>
     @foreach (var heir in Inheritance.GetHeirs())
     {
         <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => personModal.Open(EditHeir, DeleteHeir, heir)">Name: @heir.Name</p>
     }
-}
+    
     <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
     <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
-    <button class="btn btn-primary" @onclick="() => assetModal.Open(SubmitAsset)">Tiløj ny asset</button>
+    <button class="btn btn-primary" @onclick="() => assetModal.Open(SubmitAsset)">Tilføj ny asset</button>
 }
-else
-{
-    // create testator first family-tree member
-    @*
-    <EditForm Model="editTestator" OnSubmit="SubmitTestator">
-        <label>
-            Navn:
-            <InputText @bind-value="editTestator.Name"></InputText>
-        </label>
-        <label>
-            Fødselsdag:
-            <InputDate TValue="DateOnly" @bind-Value="editTestator.Birthday"></InputDate>
-        </label>
-        <label>
-            ErDød?:
-            <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
-        </label>
-        <button class="btn btn-primary" type="submit">Submit</button>
-    </EditForm>
-    *@
-}
-<PersonModal @ref="personModal"/>
-<TestatorModal @ref="testatorModal"/>
-<AssetModal @ref="assetModal"/>
+
+<PersonModal @ref="personModal" />
+<TestatorModal @ref="testatorModal" />
+<AssetModal @ref="assetModal" />
 
 @code {
-    private Testator editTestator { get; set; }
-    private Person editHeir { get; set; }
-    private Asset editAsset { get; set; }
-    
-    private bool addingNewTestator = false;
-    private bool addingNewHeir = false;
-    private bool addingNewAsset = false;
+    private Testator? editTestator { get; set; }
+    private Person? editHeir { get; set; }
+    private Asset? editAsset { get; set; }
 
     private PersonModal personModal = new();
     private TestatorModal testatorModal = new();
@@ -68,6 +51,7 @@ protected override void OnInitialized()
         editAsset = new();
         base.OnInitialized();
     }
+
     private async void SubmitTestator(Testator testator)
     {
 
