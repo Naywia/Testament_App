@@ -1,4 +1,5 @@
 ﻿using iText.Html2pdf;
+using iText.Html2pdf.Css.Resolve;
 using iText.IO.Font;
 using iText.IO.Image;
 using iText.Kernel.Colors;
@@ -187,28 +188,55 @@ namespace Testament_App.Services
 
         async Task<string> FetchWebPageContent(string url)
         {
-            // Convert the memory stream to a string.
-            //string htmlContent;
+            // Fetch the HTML
+            string htmlContent;
 
             HttpClient client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var response = client.Send(request);
 
-            //var responseStream = response.Content.ReadAsStream();
-            //using var memoryStream = new MemoryStream();
-            //responseStream.CopyTo(memoryStream);
+            var responseStream = response.Content.ReadAsStream();
+            using var memoryStream = new MemoryStream();
+            responseStream.CopyTo(memoryStream);
 
-            //// Reset the position of the memory stream to the beginning before reading it.
-            //memoryStream.Position = 0;
+            // Reset the position of the memory stream to the beginning before reading it.
+            memoryStream.Position = 0;
 
-            //using (var reader = new StreamReader(memoryStream))
-            //{
-            //    htmlContent = reader.ReadToEnd();
-            //}
+            using (var reader = new StreamReader(memoryStream))
+            {
+                htmlContent = reader.ReadToEnd();
+            }
 
-            return await response.Content.ReadAsStringAsync();
+            // Fetch the CSS
+            string cssContent;
 
-            //return htmlContent;
+            string cssUrl = "https://localhost:7032/app.css"; // Replace with logic to parse the correct href from the HTML
+
+            var cssRequest = new HttpRequestMessage(HttpMethod.Get, cssUrl);
+            var cssResponse = client.Send(cssRequest);
+
+            var cssResponseStream = cssResponse.Content.ReadAsStream();
+            using var cssMemoryStream = new MemoryStream();
+            cssResponseStream.CopyTo(cssMemoryStream);
+
+            // Reset the position of the memory stream to the beginning before reading it.
+            cssMemoryStream.Position = 0;
+
+            using (var reader = new StreamReader(cssMemoryStream))
+            {
+                cssContent = reader.ReadToEnd();
+            }
+
+            // Stich HTML and CSS together
+            string updatedHtml = htmlContent.Replace(
+                "<link rel=\"stylesheet\" href=\"app.css\">",
+                $"<style>\n{cssContent}\n</style>"
+            );
+            Console.WriteLine(updatedHtml);
+
+            //return await response.Content.ReadAsStringAsync();
+
+            return updatedHtml;
         }
     }
 }
