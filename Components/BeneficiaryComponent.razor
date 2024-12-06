@@ -1,9 +1,12 @@
-﻿<h3>Begunstige</h3>
-@foreach (var beneficiary in Inheritance.GetBeneficiaries())
+﻿<h3>Begunstige:</h3>
+<ul>
+@for (int i = 0; i < beneficiaries.Length; i++)
 {
-    <p>@beneficiary.Name</p>
+    <li>@beneficiaries[i].Name</li>
 }
+</ul>
+
 
 @code {
-
+    Beneficiary[] beneficiaries = Inheritance.GetBeneficiaries();
 }

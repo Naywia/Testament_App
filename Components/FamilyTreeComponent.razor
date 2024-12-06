@@ -65,6 +65,7 @@
     <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tilføj ny testator</button>
     <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tilføj ny arving</button>
     <button class="btn btn-primary" @onclick="() => beneficiaryModal.Open(SubmitBeneficiary)">Tilføj begunstiget</button>
+    <BeneficiaryComponent />
 }
 else
 {
@@ -89,7 +90,6 @@ else
 }
 <PersonModal @ref="personModal" />
 <TestatorModal @ref="testatorModal" />
-<BeneficiaryModal @ref="beneficiaryModal" />
 
 @code {
     private Testator editTestator { get; set; }
