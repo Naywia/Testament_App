@@ -5,28 +5,35 @@
     <h3>Testators:</h3>
     @foreach (var testator in Inheritance.GetTestators())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;">Name: @testator.Name</p>
+        <div class="d-flex">
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;">Name: @testator.Name</p>
+            @foreach (var asset in testator.GetAssets()) 
+            {
+                <p class="border border-dark border-1 rounded-3" style="width: 100px;">Asset: @asset.Name </p>
+            }
+        </div>
     }
+
     <h3>Heirs:</h3>
     @foreach (var heir in Inheritance.GetHeirs())
     {
         <p class="border border-dark border-1 rounded-3" style="width: 280px;">Name: @heir.Name</p>
     }
-    
+
     <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
     <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
-    <button class="btn btn-primary" @onclick="() => assetModal.Open(SubmitAsset)">Tiløj ny asset</button>
+    <button class="btn btn-primary" @onclick="() => assetModal.Open(SubmitAsset)">Tilføj ny asset</button>
 }
 
-<PersonModal @ref="personModal"/>
-<TestatorModal @ref="testatorModal"/>
-<AssetModal @ref="assetModal"/>
+<PersonModal @ref="personModal" />
+<TestatorModal @ref="testatorModal" />
+<AssetModal @ref="assetModal" />
 
 @code {
-    private Testator editTestator { get; set; }
-    private Person editHeir { get; set; }
-    private Asset editAsset { get; set; }
-    
+    private Testator? editTestator { get; set; }
+    private Person? editHeir { get; set; }
+    private Asset? editAsset { get; set; }
+
     private PersonModal personModal = new();
     private TestatorModal testatorModal = new();
     private AssetModal assetModal = new();
@@ -45,13 +52,13 @@
         editAsset = new();
         base.OnInitialized();
     }
-    
+
     private void SubmitTestator(Testator testator)
     {
         Inheritance.AddTestator(testator);
         InvokeAsync(StateHasChanged);
     }
-    
+
     private void SubmitHeir(Person heir)
     {
         Inheritance.AddHeir(heir);
