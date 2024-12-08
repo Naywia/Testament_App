@@ -9,8 +9,11 @@ public static class Inheritance
 
     public static void AddTestator(Testator testator)
     {
-        _testators.Add(testator);
-        FamilyTree.AddMember(testator);
+        if (_testators.Count < 2)
+        {
+            _testators.Add(testator);
+            FamilyTree.AddMember(testator);
+        }
     }
 
     public static Testator[] GetTestators()

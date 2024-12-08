@@ -11,12 +11,18 @@
             <div class="modal-body">
                 @if (selectedType != null)
                 {
-                    <DynamicComponent Type="selectedType" @ref="_dynamicComponent"/>
+                    <DynamicComponent Type="selectedType" @ref="_dynamicComponent" Parameters="_parameters"/>
                 }
             </div>
             <div class="modal-footer">
-                @* <button type="button" class="btn btn-primary" @onclick="() => { Submit(editItem); Close(); }">AddItem</button> *@
-                <button type="button" class="btn btn-primary" @onclick="Submit">AddItem</button>
+                @if (_parameters["EditIndex"] != null)
+                {
+                     <button type="button" class="btn btn-warning" @onclick="Delete">Delete</button> 
+                }
+                else
+                {
+                    <button type="button" class="btn btn-primary" @onclick="Submit">AddItem</button>
+                }
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
             </div>
         </div>
@@ -35,6 +41,7 @@
     private String ModalDisplay = "none;";
     private String ModalClass = "visually-hidden";
     //private bool ShowBackdrop = false;
+    private Action CommandUpdate;
 
     //private readonly Dictionary<String, Type> components = new()
     //{
@@ -42,16 +49,56 @@
     //    [nameof(TestatorEdit)] = typeof(TestatorEdit),
     //};
     private Type selectedType;
-    //private String selectedType;
-    private DynamicComponent _dynamicComponent;
+    private DynamicComponent? _dynamicComponent = new();
+    private Dictionary<String, Object> _parameters = new()
+    {
+        ["EditIndex"] = null,
+    };
     
-    public async Task Open(Type componentType)
+    public async void Open(Type componentType, Action update)
     {
         ModalDisplay = "block;";
         ModalClass = "show";
         //ShowBackdrop = true;
+        CommandUpdate = update;
         //selectedType = components[componentType];
         selectedType = componentType;
+        _parameters["EditIndex"] = null;
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    // get instance of the item to edit and parse it or use id thing
+    public async void Open(Type componentType, Int32 index, Action update)
+    {
+        ModalDisplay = "block;";
+        ModalClass = "show";
+        //ShowBackdrop = true;
+        CommandUpdate = update;
+        //selectedType = components[componentType];
+        selectedType = componentType;
+        _parameters["EditIndex"] = index;
+        //if (selectedType == typeof(PersonEdit))
+        //{
+        //    Console.WriteLine($"Submitting Heir");
+        //    (_dynamicComponent.Instance as PersonEdit)?.Submit();
+        //}
+        //else if (selectedType == typeof(TestatorEdit))
+        //{
+        //    Console.WriteLine($"Submitting Testator");
+        //    (_dynamicComponent.Instance as TestatorEdit)?.Submit();
+        //}
+        //else
+        //{
+        //    Console.WriteLine($"Unsupported type found during submission");
+        //}
         try
         {
             await InvokeAsync(StateHasChanged);
@@ -68,37 +115,63 @@
         ModalDisplay = "none;";
         ModalClass = "visually-hidden";
         //ShowBackdrop = false;
-        try
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        _parameters["EditIndex"] = null;
+        CommandUpdate();
     }
 
     private async Task Submit()
     {
-        // TODO: Change type in type cast depending on selectedType variable
         Console.WriteLine($"Selected Type: {selectedType}");
-        //if (selectedType is PersonEdit)
+        //switch (selectedType)
         //{
-        //    Console.WriteLine($"Submitting Heir");
-        //    (_dynamicComponent.Instance as PersonEdit)?.Submit();
+        //    case Type _ when selectedType == typeof(PersonEdit):
+        //        (_dynamicComponent.Instance as PersonEdit)?.Submit();
+        //        Console.WriteLine("Handling Person type");
+        //        break;
+        //    case Type _ when selectedType == typeof(TestatorEdit):
+        //        (_dynamicComponent.Instance as TestatorEdit)?.Submit();
+        //        Console.WriteLine("Handling Testator type");
+        //        break;
+        //    default:
+        //        // Handle other types
+        //        Console.WriteLine("Handling other type");
+        //        break;
         //}
-        //else if (selectedType is TestatorEdit)
-        //{
-        //    Console.WriteLine($"Submitting Testator");
-        //    (_dynamicComponent.Instance as TestatorEdit)?.Submit();
-        //}
-        //else
-        //{
-        //    Console.WriteLine($"Unsupported type found during submission");
-        //}
-        (_dynamicComponent.Instance as PersonEdit)?.Submit();
-        await InvokeAsync(StateHasChanged);
+        
+        if (selectedType == typeof(PersonEdit))
+        {
+            Console.WriteLine($"Submitting Heir");
+            (_dynamicComponent.Instance as PersonEdit)?.Submit();
+        }
+        else if (selectedType == typeof(TestatorEdit))
+        {
+            Console.WriteLine($"Submitting Testator");
+            (_dynamicComponent.Instance as TestatorEdit)?.Submit();
+        }
+        else
+        {
+            Console.WriteLine($"Unsupported type found during submission");
+        }
+        await Close();
+    }
+    
+    private async Task Delete()
+    {
+        Console.WriteLine($"Selected Type: {selectedType}");
+        if (selectedType == typeof(PersonEdit))
+        {
+            Console.WriteLine($"Submitting Heir");
+            (_dynamicComponent.Instance as PersonEdit)?.Delete();
+        }
+        else if (selectedType == typeof(TestatorEdit))
+        {
+            Console.WriteLine($"Submitting Testator");
+            (_dynamicComponent.Instance as TestatorEdit)?.Delete();
+        }
+        else
+        {
+            Console.WriteLine($"Unsupported type found during submission");
+        }
         await Close();
     }
 }

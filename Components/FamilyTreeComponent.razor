@@ -3,11 +3,10 @@
 {
     <h2>FamilyTree:</h2>
     <h3>Testators:</h3>
-    @foreach (var testator in Inheritance.GetTestators())
+    @foreach (var (testator, i) in Inheritance.GetTestators().Select((testator, i) => (testator, i)))
     {
         <div class="d-flex">
-            <p class="border border-dark border-1 rounded-3" style="width: 280px;"
-                @onclick="() => testatorModal.Open(EditTestator, DeleteTestator, testator)">Name: @testator.Name</p>
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(TestatorEdit), i, Update)">Name: @testator.Name</p>
             @foreach (var asset in testator.GetAssets())
             {
                 <p class="border border-dark border-1 rounded-3" style="width: 100px;">Asset: @asset.Name </p>
@@ -15,106 +14,30 @@
         </div>
     }
     <h3>Heirs:</h3>
-    @foreach (var heir in Inheritance.GetHeirs())
+    @foreach (var (heir, i) in Inheritance.GetHeirs().Select((heir, i) => (heir, i)))
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;"
-            @onclick="() => personModal.Open(EditHeir, DeleteHeir, heir)">Name: @heir.Name</p>
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), i, Update)">Name: @heir.Name</p>
     }
 }
-<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit)); }">Tiløj ny testator</button>
-<button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
-<button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit))">Tiløj test</button>
+<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny testator</button>
+<button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit), Update)">Tilføj ny arving</button>
 
-<PersonModal @ref="personModal" />
-<TestatorModal @ref="testatorModal" />
 <AssetModal @ref="assetModal" />
 <Modal @ref="modal"/>
 
 @code {
-    private PersonModal personModal = new();
-    private TestatorModal testatorModal = new();
     private Modal modal = new();
     private AssetModal assetModal = new();
 
     protected override void OnAfterRender(bool firstRender)
     {
         // Opens pop-up for adding testator if none are present is checked each render-cycle
-        if (!Inheritance.GetTestators().Any()) testatorModal.Open(SubmitTestator);
+        if (!Inheritance.GetTestators().Any()) modal.Open(typeof(TestatorEdit), Update);
         base.OnAfterRender(firstRender);
     }
-
-    private async void SubmitTestator(Testator testator)
+    
+    private async void Update()
     {
-        Inheritance.AddTestator(testator);
-        try
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    private async void EditTestator(Testator testator)
-    {
-        try
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    private async void DeleteTestator(Testator testator)
-    {
-        Inheritance.DeleteTestator(testator);
-        try
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    private async void SubmitHeir(Person heir)
-    {
-        Inheritance.AddHeir(heir);
-        try
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    private async void EditHeir(Person heir)
-    {
-        //InvokeAsync(StateHasChanged);
-        try
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    private async void DeleteHeir(Person heir)
-    {
-        Inheritance.DeleteHeir(heir);
         try
         {
             await InvokeAsync(StateHasChanged);
