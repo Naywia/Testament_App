@@ -1,5 +1,4 @@
 @rendermode InteractiveServer
-<h3>PersonCreate</h3>
 <div>
     <label>
         Navn:
@@ -52,6 +51,9 @@
 </div>
 
 @code {
+
+    [Parameter]
+    public Int32? EditIndex { get; set; }
     private Person editPerson { get; set; }
     private IEnumerable<Person> _persons => FamilyTree.GetMembers();
     private String? selectedParentName { get; set; } = null;
@@ -61,13 +63,46 @@
     
     protected override void OnParametersSet()
     {
-        editPerson = new();
+        if (EditIndex != null)
+        {
+            editPerson = Inheritance.GetHeirs()[(Int32)EditIndex];
+            Console.WriteLine($"EditTestator: {editPerson.Name}");
+            InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            editPerson = new();
+        }
+        //Console.WriteLine("OnParametersSet");
         base.OnParametersSet();
     }
 
-    public async Task Submit()
+    public void Submit()
     {
         Inheritance.AddHeir(editPerson);
-        await InvokeAsync(StateHasChanged);
+        Reset();
+    }
+
+    public void Delete()
+    {
+        Inheritance.DeleteHeir(editPerson);
+        Reset();
+    }
+    
+    private void Reset()
+    {
+        try
+        {
+            InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        editPerson = new();
+        EditIndex = null;
+        selectedParentName = null;
+        selectedChildName = null;
     }
 }
