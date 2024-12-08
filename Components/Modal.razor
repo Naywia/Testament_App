@@ -117,15 +117,6 @@
         //ShowBackdrop = false;
         _parameters["EditIndex"] = null;
         CommandUpdate();
-        try
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
     }
 
     private async Task Submit()
