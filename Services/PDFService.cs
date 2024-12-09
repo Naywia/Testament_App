@@ -13,6 +13,7 @@ using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using System.Text;
+using Testament_App.Models;
 
 namespace Testament_App.Services
 {
@@ -164,7 +165,8 @@ namespace Testament_App.Services
             try
             {
                 // Fetch html
-                var htmlContent = FetchWebPageContent("https://localhost:7032/familytree").Result;
+                //var htmlContent = FetchWebPageContent("https://localhost:7032/familytree").Result;
+                var htmlContent = MakeHtmlFamilyTree();
 
                 // Convert the web page content to a PDF and write to the MemoryStream
                 ConverterProperties converterProperties = new();
@@ -186,47 +188,19 @@ namespace Testament_App.Services
             }
         }
 
-        async Task<string> FetchWebPageContent(string url)
+        private string MakeHtmlFamilyTree()
         {
-            // Fetch the HTML
-            string htmlContent;
-
-            HttpClient client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-            var response = client.Send(request);
-
-            var responseStream = response.Content.ReadAsStream();
-
-            using (var reader = new StreamReader(responseStream))
+            string familyTreeHtml = "";
+            foreach (var testator in Inheritance.GetTestators())
             {
-                htmlContent = reader.ReadToEnd();
+                familyTreeHtml += $"<p class=\"border border-dark border - 1 rounded - 3\" style=\"width: 280px;\">Name: {testator.Name}</p>";
+            }
+            foreach (var heir in Inheritance.GetHeirs())
+            {
+                familyTreeHtml += $"<p class=\"border border-dark border - 1 rounded - 3\" style=\"width: 280px;\">Name: {heir.Name}</p>";
             }
 
-            // Fetch the CSS
-            string cssContent;
-
-            string cssUrl = "https://localhost:7032/app.css"; // Replace with logic to parse the correct href from the HTML
-
-            var cssRequest = new HttpRequestMessage(HttpMethod.Get, cssUrl);
-            var cssResponse = client.Send(cssRequest);
-
-            var cssResponseStream = cssResponse.Content.ReadAsStream();
-
-            using (var reader = new StreamReader(cssResponseStream))
-            {
-                cssContent = reader.ReadToEnd();
-            }
-
-            // Stich HTML and CSS together
-            string updatedHtml = htmlContent.Replace(
-                "<link rel=\"stylesheet\" href=\"app.css\">",
-                $"<style>\n{cssContent}\n</style>"
-            );
-            Console.WriteLine(updatedHtml);
-
-            //return await response.Content.ReadAsStringAsync();
-
-            return updatedHtml;
+            return familyTreeHtml;
         }
     }
 }

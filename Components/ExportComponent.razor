@@ -1,0 +1,38 @@
+﻿@using Testament_App.Services
+@inject PDFService PdfService
+@inject IJSRuntime JSRuntime
+
+@rendermode InteractiveServer
+
+<!-- Button to trigger PDF generation and download -->
+<button @onclick="GenerateAndDownloadPdf" class="btn btn-primary">
+    Exporter PDF
+</button>
+
+@code {
+    private async Task GenerateAndDownloadPdf()
+    {
+        // Assume you have the family tree data in JSON format
+        var familyTreeJson = GetFamilyTreeJson(); // Replace this with your actual data
+
+        // Generate PDF
+        var pdfBytes = PdfService.GeneratePdf(familyTreeJson);
+
+        // Trigger the download of the generated PDF file
+        var fileName = "Arvefordeleren.pdf";
+        await DownloadFile(pdfBytes, fileName);
+    }
+
+    private string GetFamilyTreeJson()
+    {
+        // For example purposes, this should return the family tree JSON
+        return "{\"members\": [{\"name\": \"John Doe\"}, {\"name\": \"Jane Doe\"}]}"; // Replace with actual logic
+    }
+
+    private async Task DownloadFile(byte[] fileBytes, string fileName)
+    {
+        // Use JavaScript Interop to trigger the file download
+        await JSRuntime.InvokeVoidAsync("downloadFile", fileBytes, fileName);
+    }
+}
+

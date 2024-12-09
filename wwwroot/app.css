@@ -1,6 +1,7 @@
 html, body {
     height: 100vh;
-    font-family: "Quicksand", "Montserrat", "Raleway", sans-serif
+    font-family: "Quicksand", "Montserrat", "Raleway", sans-serif;
+    color: #fff;
 }
 
 body {
