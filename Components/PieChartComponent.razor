@@ -7,6 +7,7 @@
     <MudButton OnClick="AddDataSize" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
     <MudButton @onclick="RandomizeData" Variant="Variant.Filled" Class="mx-4">Randomize</MudButton>
     <MudButton OnClick="RemoveDataSize" Variant="Variant.Filled" Color="Color.Secondary">Remove</MudButton>
+    <MudButton OnClick="Calc" Variant="Variant.Filled" Color="Color.Secondary">Update</MudButton>
 </MudPaper>
 <MudText Typo="Typo.h6">Selected portion of the chart: @Index</MudText>
 
@@ -19,6 +20,25 @@
         "Neptunium", "Americium", "Curium", "Berkelium", "Californium", "Einsteinium", "Mudblaznium" };
 
     Random random = new Random();
+
+    void Calc()
+    {
+        Double familyMemeberCount = FamilyTree.GetMembers().Count;
+        Double heirCount = Inheritance.GetHeirs().Count(heir => heir.IsAlive == false);
+        Double result = (1 / heirCount) * 100;
+
+        var new_data = new double[(int)heirCount];
+        for (int i = 0; i < new_data.Length; i++)
+            new_data[i] = result;
+        data = new_data;
+
+        var new_labels = new string[(int)heirCount];
+        for (int i = 0; i < new_labels.Length; i++)
+            new_labels[i] = $"{Inheritance.GetHeirs()[i].Name}: {result:F}";
+        labels = new_labels;
+        
+        StateHasChanged();
+    }
 
     void RandomizeData()
     {
