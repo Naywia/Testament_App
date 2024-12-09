@@ -5,97 +5,20 @@
     <h3>Testators:</h3>
     @foreach (var testator in Inheritance.GetTestators())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;">Name: @testator.Name</p>
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => testatorModal.Open(EditTestator, DeleteTestator, testator)">Name: @testator.Name</p>
     }
     <h3>Heirs:</h3>
     @foreach (var heir in Inheritance.GetHeirs())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;">Name: @heir.Name</p>
-        @*
-        <div class="p-0 m-0 bg-light border border-dark border-1 rounded-3">
-            <p>Name: @heir.Name</p>
-        </div>
-    *@
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => personModal.Open(EditHeir, DeleteHeir, heir)">Name: @heir.Name</p>
     }
-    @*
-    @if (addingNewTestator)
-    {
-        <EditForm Model="editTestator" OnSubmit="SubmitTestator">
-            <label>
-                Navn:
-                <InputText @bind-value="editTestator.Name"></InputText>
-            </label>
-            <label>
-                Fødselsdag:
-                <InputDate TValue="DateOnly" @bind-Value="editTestator.Birthday"></InputDate>
-            </label>
-            <label>
-                ErDød?:
-                <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
-            </label>
-            <button class="btn btn-primary" type="submit">Submit</button>
-        </EditForm>
-    }
-    else if (addingNewHeir)
-    {
-        <EditForm Model="editHeir" OnSubmit="SubmitHeir">
-            <label>
-                Navn:
-                <InputText @bind-value="editHeir.Name"></InputText>
-            </label>
-            <label>
-                Fødselsdag:
-                <InputDate TValue="DateOnly" @bind-Value="editHeir.Birthday"></InputDate>
-            </label>
-            <label>
-                ErDød?:
-                <InputCheckbox @bind-Value="editHeir.IsAlive"></InputCheckbox>
-            </label>
-            <button class="btn btn-primary" type="submit">Submit</button>
-        </EditForm>
-    }
-    *@
-    /*
-    else
-    {
-        <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
-        <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
-    }
-    */
-    <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
-    <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
 }
-else
-{
-    // create testator first family-tree member
-    @*
-    <EditForm Model="editTestator" OnSubmit="SubmitTestator">
-        <label>
-            Navn:
-            <InputText @bind-value="editTestator.Name"></InputText>
-        </label>
-        <label>
-            Fødselsdag:
-            <InputDate TValue="DateOnly" @bind-Value="editTestator.Birthday"></InputDate>
-        </label>
-        <label>
-            ErDød?:
-            <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
-        </label>
-        <button class="btn btn-primary" type="submit">Submit</button>
-    </EditForm>
-    *@
-}
+<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
+<button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
 <PersonModal @ref="personModal"/>
 <TestatorModal @ref="testatorModal"/>
 
 @code {
-    private Testator editTestator { get; set; }
-    private Person editHeir { get; set; }
-    
-    private bool addingNewTestator = false;
-    private bool addingNewHeir = false;
-
     private PersonModal personModal = new();
     private TestatorModal testatorModal = new();
 
@@ -106,38 +29,86 @@ else
         base.OnAfterRender(firstRender);
     }
 
-    protected override void OnInitialized()
-    {
-        editTestator = new();
-        editHeir = new();
-        base.OnInitialized();
-    }
-
-    private void SubmitTestator()
-    {
-        Inheritance.AddTestator(editTestator);
-        addingNewTestator = false;
-        editTestator = new();
-    }
-    
-    private void SubmitTestator(Testator testator)
+    private async void SubmitTestator(Testator testator)
     {
         Inheritance.AddTestator(testator);
-        addingNewTestator = false;
-        InvokeAsync(StateHasChanged);
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
-    private void SubmitHeir()
+    private async void EditTestator(Testator testator)
     {
-        Inheritance.AddHeir(editHeir);
-        addingNewHeir = false;
-        editHeir = new();
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
-    
-    private void SubmitHeir(Person heir)
+
+    private async void DeleteTestator(Testator testator)
+    {
+        Inheritance.DeleteTestator(testator);
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async void SubmitHeir(Person heir)
     {
         Inheritance.AddHeir(heir);
-        addingNewHeir = false;
-        InvokeAsync(StateHasChanged);
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    private async void EditHeir(Person heir)
+    {
+        //InvokeAsync(StateHasChanged);
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async void DeleteHeir(Person heir)
+    {
+        Inheritance.DeleteHeir(heir);
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

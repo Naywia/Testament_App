@@ -17,6 +17,12 @@ public static class Inheritance
     {
         return _testators.ToArray();
     }
+
+    public static void DeleteTestator(Testator testator)
+    {
+        _testators.Remove(testator);
+        FamilyTree.RemoveMember(testator);
+    }
     
     public static void AddHeir(Person heir)
     {
@@ -27,5 +33,11 @@ public static class Inheritance
     public static Person[] GetHeirs()
     {
         return _heirs.ToArray();
+    }
+
+    public static void DeleteHeir(Person heir)
+    {
+        _heirs.Remove(heir);
+        FamilyTree.RemoveMember(heir);
     }
 }

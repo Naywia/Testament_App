@@ -1,16 +1,14 @@
 @rendermode InteractiveServer
-@* @typeparam TItem *@
 <div class="modal fade @ModalClass" id="thing" tabindex="-1" role="dialog" style="display:@ModalDisplay" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document" > 
         <div class="modal-content">
             <div class="modal-header">
-                @* <h5 class="modal-title">Modal title</h5> *@
+                <h5 class="modal-title">Tilføj Testator</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                @* <EditForm Model="editPerson" OnSubmit="() => Submit(editPerson)"> *@
                 <label>
                     Navn:
                     <InputText @bind-value="editTestator.Name"></InputText>
@@ -23,17 +21,49 @@
                     ErDød?:
                     <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
                 </label>
-                @*
-                    <label>
-                        Relation:
-                        <input></input>
-                    </label>
-                    *@
-                @* <button class="btn btn-primary" type="submit">Submit</button> *@
-                @* </EditForm> *@
+                <label>
+                    Børn:
+                    @foreach (var child in editTestator.Children)
+                    {
+                        <p>@child.Name</p>
+                    }
+                    <InputSelect @bind-value="selectedChildName">
+                        @if (selectedChildName == null)
+                        {
+                            <option selected value="">None</option>
+                        }
+                        @foreach (var person in _persons)
+                        {
+                            <option value="@person.Name">@person.Name</option>
+                        }
+                    </InputSelect>
+                    <button @onclick="() => editTestator.AddChild(selectedChild)">Tilføj barn</button>
+                </label>
+                <label>
+                    forældre:
+                    @foreach (var parent in editTestator.Parents)
+                    {
+                        <p>@parent.Name</p>
+                    }
+                    <InputSelect @bind-value="selectedParentName">
+                        @if (selectedParentName == null)
+                        {
+                            <option selected value="">None</option>
+                        }
+                        @foreach (var person in _persons)
+                        {
+                            <option value="@person.Name">@person.Name</option>
+                        }
+                    </InputSelect>
+                    <button @onclick="() => editTestator.AddParent(selectedParent)">Tilføj forælder</button>
+                </label>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @onclick="() => { Submit(editTestator); Close(); }">AddItem</button>
+                @if (CommandDelete != null)
+                {
+                    <button type="button" class="btn btn-warning" @onclick="() => { CommandDelete(editTestator); Close(); }">Fjern arvelader</button>
+                }
+                <button type="button" class="btn btn-primary" @onclick="() => { Command(editTestator); Close(); }">AddItem</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
             </div>
         </div>
@@ -53,25 +83,51 @@
     private String ModalClass = "visually-hidden";
     //private bool ShowBackdrop = false;
     private Testator editTestator { get; set; }
-    private Action<Testator> Submit { get; set; }
+    private Action<Testator>? Command { get; set; }
+    private Action<Testator>? CommandDelete { get; set; }
 
+    private IEnumerable<Person> _persons => FamilyTree.GetMembers();
+    private String? selectedParentName { get; set; } = null;
+    private Person? selectedParent => _persons.First(d => d.Name == selectedParentName);
+    private String? selectedChildName { get; set; } = null;
+    private Person? selectedChild => _persons.First(d => d.Name == selectedChildName);
+    
     protected override void OnParametersSet()
     {
         editTestator = new();
+        CommandDelete = null;
         base.OnParametersSet();
     }
 
-    public void Open(Action<Testator> submit)
+    public async void Open(Action<Testator> submit)
     {
+        ModalDisplay = "block;";
+        ModalClass = "show";
+        //ShowBackdrop = true;
+        editTestator = new();
+        Command = submit;
         try
         {
-            ModalDisplay = "block;";
-            ModalClass = "show";
-            //ShowBackdrop = true;
-            editTestator = new();
-            Submit = submit;
-            StateHasChanged();
-            //InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    public async void Open(Action<Testator> edit, Action<Testator> delete, Testator testator)
+    {
+        ModalDisplay = "block;";
+        ModalClass = "show";
+        //ShowBackdrop = true;
+        editTestator = testator;
+        Command = edit;
+        CommandDelete = delete;
+        try
+        {
+            await InvokeAsync(StateHasChanged);
         }
         catch (Exception e)
         {
@@ -80,19 +136,21 @@
         }
     }
 
-    private void Close()
+    private async void Close()
     {
-        try
-        {
-            ModalDisplay = "none;";
-            ModalClass = "visually-hidden";
-            //ShowBackdrop = false;
-            InvokeAsync(StateHasChanged);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        ModalDisplay = "none;";
+        ModalClass = "visually-hidden";
+        //ShowBackdrop = false;
+        Command = null;
+        CommandDelete = null;
+        //try
+        //{
+        //    await InvokeAsync(StateHasChanged);
+        //}
+        //catch (Exception e)
+        //{
+        //    Console.WriteLine(e);
+        //    throw;
+        //}
     }
 }
