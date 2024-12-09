@@ -196,13 +196,8 @@ namespace Testament_App.Services
             var response = client.Send(request);
 
             var responseStream = response.Content.ReadAsStream();
-            using var memoryStream = new MemoryStream();
-            responseStream.CopyTo(memoryStream);
 
-            // Reset the position of the memory stream to the beginning before reading it.
-            memoryStream.Position = 0;
-
-            using (var reader = new StreamReader(memoryStream))
+            using (var reader = new StreamReader(responseStream))
             {
                 htmlContent = reader.ReadToEnd();
             }
@@ -216,13 +211,8 @@ namespace Testament_App.Services
             var cssResponse = client.Send(cssRequest);
 
             var cssResponseStream = cssResponse.Content.ReadAsStream();
-            using var cssMemoryStream = new MemoryStream();
-            cssResponseStream.CopyTo(cssMemoryStream);
 
-            // Reset the position of the memory stream to the beginning before reading it.
-            cssMemoryStream.Position = 0;
-
-            using (var reader = new StreamReader(cssMemoryStream))
+            using (var reader = new StreamReader(cssResponseStream))
             {
                 cssContent = reader.ReadToEnd();
             }
