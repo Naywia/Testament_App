@@ -166,7 +166,17 @@ namespace Testament_App.Services
             {
                 // Fetch html
                 //var htmlContent = FetchWebPageContent("https://localhost:7032/familytree").Result;
-                var htmlContent = MakeHtmlFamilyTree();
+                var htmlContent = @"<html><head>
+                    <style>
+                        .familyTreePerson {
+                            width: 280px;
+                            background-color: orange;
+                        }
+                    </style>
+                </head><body>";
+                htmlContent += GenerateHtmlFamilyTree();
+
+                htmlContent += "</body></html>";
 
                 // Convert the web page content to a PDF and write to the MemoryStream
                 ConverterProperties converterProperties = new();
@@ -188,16 +198,16 @@ namespace Testament_App.Services
             }
         }
 
-        private string MakeHtmlFamilyTree()
+        private string GenerateHtmlFamilyTree()
         {
             string familyTreeHtml = "";
             foreach (var testator in Inheritance.GetTestators())
             {
-                familyTreeHtml += $"<p class=\"border border-dark border - 1 rounded - 3\" style=\"width: 280px;\">Name: {testator.Name}</p>";
+                familyTreeHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {testator.Name}</p>";
             }
             foreach (var heir in Inheritance.GetHeirs())
             {
-                familyTreeHtml += $"<p class=\"border border-dark border - 1 rounded - 3\" style=\"width: 280px;\">Name: {heir.Name}</p>";
+                familyTreeHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {heir.Name}</p>";
             }
 
             return familyTreeHtml;
