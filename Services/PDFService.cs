@@ -1,5 +1,4 @@
 ﻿using iText.Html2pdf;
-using iText.Html2pdf.Css.Resolve;
 using iText.IO.Font;
 using iText.IO.Image;
 using iText.Kernel.Colors;
@@ -8,10 +7,10 @@ using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas;
 using iText.Kernel.Pdf.Extgstate;
-using iText.Kernel.Utils;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using Newtonsoft.Json;
 using System.Text;
 using Testament_App.Models;
 
@@ -45,7 +44,7 @@ namespace Testament_App.Services
             _bodyFont = PdfFontFactory.CreateFont(quicksandPath, PdfEncodings.IDENTITY_H, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
         }
 
-        public byte[] GeneratePdf(string familyTreeJson, string password = "test")
+        public byte[] GeneratePdf(string password = "test")
         {
             var writerProperties = new WriterProperties()
                     .SetStandardEncryption(
@@ -61,7 +60,7 @@ namespace Testament_App.Services
                 using var pdf = CreateCoverPage(writer);
                 // Add metadata
                 pdf.GetDocumentInfo().SetTitle("Arvefordeleren");
-                pdf.GetDocumentInfo().SetMoreInfo("FamilyTreeJSON", familyTreeJson);
+                pdf.GetDocumentInfo().SetMoreInfo("FamilyTreeInfo", GetFamilyTreeJSON());
 
                 using var document = new Document(pdf);
 
@@ -153,6 +152,24 @@ namespace Testament_App.Services
                 .SetTextAlignment(TextAlignment.CENTER));
 
             document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE)); // Move to the next page
+        }
+
+        private string GetFamilyTreeJSON()
+        {
+            List<Testator> testators = [.. Inheritance.GetTestators()];
+            List<Person> heirs = [.. Inheritance.GetHeirs()];
+
+            var familyTree = new
+            {
+                Testators = testators,
+                Heirs = heirs
+            };
+
+            string json = JsonConvert.SerializeObject(familyTree, Formatting.Indented);
+
+            Console.WriteLine(json);
+
+            return json;
         }
 
         private void AddFamilyTree(Document document)

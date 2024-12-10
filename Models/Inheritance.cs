@@ -9,6 +9,8 @@ public static class Inheritance
 
     public static void AddTestator(Testator testator)
     {
+        testator.Id = GetNextId();
+
         _testators.Add(testator);
         FamilyTree.AddMember(testator);
     }
@@ -26,6 +28,8 @@ public static class Inheritance
     
     public static void AddHeir(Person heir)
     {
+        heir.Id = GetNextId();
+
         _heirs.Add(heir);
         FamilyTree.AddMember(heir);
     }
@@ -39,5 +43,22 @@ public static class Inheritance
     {
         _heirs.Remove(heir);
         FamilyTree.RemoveMember(heir);
+    }
+
+    private static int GetNextId()
+    {
+        // Get all used IDs from both lists
+        var usedIds = _testators.Select(t => t.Id)
+                                .Union(_heirs.Select(h => h.Id))
+                                .ToHashSet();
+
+        // Find the next unused ID starting from 1
+        int nextId = 1;
+        while (usedIds.Contains(nextId))
+        {
+            nextId++;
+        }
+
+        return nextId;
     }
 }

@@ -24,10 +24,10 @@
         </div>
     </div>
 
-    <div id="buttons">
+    <div id="buttons-cointainer">
         <div id="input-div">
             <InputFile id="file-input" OnChange="ImportPDF" accept="application/pdf" class="visually-hidden" /> @* visually-hidden is Bootstrap and hides the input. *@
-            <label id="input-button" for="file-input" class="frontpage-buttons">Importer PDF</label>
+            <label id="input-button" for="file-input" class="button">Importer PDF</label>
 
             @if (!string.IsNullOrEmpty(FileMessage))
             {
@@ -35,7 +35,7 @@
             }
         </div>
 
-        <a @onclick="NavigateToOverview" class="frontpage-buttons a-buttons">Start ny visning</a>
+        <button id="continue" class="button" @onclick="NavigateToOverview">Start ny visning</button>
     </div>
 </section>
 
