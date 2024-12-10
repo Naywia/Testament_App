@@ -6,8 +6,9 @@
     @foreach (var testator in Inheritance.GetTestators())
     {
         <div class="d-flex">
-            <p class="border border-dark border-1 rounded-3" style="width: 280px;">Name: @testator.Name</p>
-            @foreach (var asset in testator.GetAssets()) 
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;"
+                @onclick="() => testatorModal.Open(EditTestator, DeleteTestator, testator)">Name: @testator.Name</p>
+            @foreach (var asset in testator.GetAssets())
             {
                 <p class="border border-dark border-1 rounded-3" style="width: 100px;">Asset: @asset.Name </p>
             }
@@ -17,10 +18,13 @@
     <h3>Heirs:</h3>
     @foreach (var heir in Inheritance.GetHeirs())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => personModal.Open(EditHeir, DeleteHeir, heir)">Name: @heir.Name</p>
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;"
+            @onclick="() => personModal.Open(EditHeir, DeleteHeir, heir)">Name: @heir.Name</p>
     }
-    
-    <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
+
+    <button class="btn btn-primary"
+        @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny
+        testator</button>
     <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
     <button class="btn btn-primary" @onclick="() => assetModal.Open(SubmitAsset)">Tilføj ny asset</button>
 }
@@ -44,7 +48,7 @@
         if (!Inheritance.GetTestators().Any()) testatorModal.Open(SubmitTestator);
         base.OnAfterRender(firstRender);
     }
-protected override void OnInitialized()
+    protected override void OnInitialized()
     {
         editTestator = new();
         editHeir = new();
@@ -107,7 +111,7 @@ protected override void OnInitialized()
             throw;
         }
     }
-    
+
     private async void EditHeir(Person heir)
     {
         //InvokeAsync(StateHasChanged);
