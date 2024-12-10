@@ -185,9 +185,29 @@ namespace Testament_App.Services
                 //var htmlContent = FetchWebPageContent("https://localhost:7032/familytree").Result;
                 var htmlContent = @"<html><head>
                     <style>
+                        body {
+                            margin: auto;
+                            justify-content: center;
+                            background-color: lightgreen;
+                        }
                         .familyTreePerson {
                             width: 280px;
+                            border: 1px solid black;
+                            border-radius: 10px;
+                            padding: 5px;
+                            margin: 5px;
+                        }
+                        #familyTreeTestatorsContainer {
+                            margin: auto;
+                            width: 80%;
                             background-color: orange;
+                            padding: 5px;
+                        }
+                        #familyTreeChildrenContainer {
+                            margin: auto;
+                            width: 80%;
+                            background-color: lightblue;
+                            padding: 5px;
                         }
                     </style>
                 </head><body>";
@@ -215,19 +235,112 @@ namespace Testament_App.Services
             }
         }
 
+        //private string GenerateHtmlFamilyTree()
+        //{
+        //    string familyTreeHtml = "";
+        //    string grandParentsHtml = @"<div id=""familyTreeGrandParentsContainer"">";
+        //    string parentsHtml = @"<div id=""familyTreeParentsContainer"">";
+        //    string testatorsHtml = @"<div id=""familyTreeTestatorsContainer"">";
+        //    string childrenHtml = @"<div id=""familyTreeChildrenContainer"">";
+        //    string grandChildrenHtml = @"<div id=""familyTreeGrandChildrenContainer"">";
+        //    foreach (Person testator in Inheritance.GetTestators())
+        //    {
+        //        if (testator.Children.Count > 0)
+        //        {
+        //            testatorsHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {testator.Name}</p>";
+        //            foreach (Person child in testator.GetChildren())
+        //            {
+        //                childrenHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {child.Name}</p>";
+        //            }
+        //        }
+        //    }
+
+        //    //foreach (var heir in Inheritance.GetHeirs())
+        //    //{
+        //    //    familyTreeHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {heir.Name}</p>";
+        //    //}
+
+        //    familyTreeHtml += grandParentsHtml + "</div>";
+        //    familyTreeHtml += parentsHtml + "</div>";
+        //    familyTreeHtml += testatorsHtml + "</div>";
+        //    familyTreeHtml += childrenHtml + "</div>";
+        //    familyTreeHtml += grandChildrenHtml + "</div>";
+        //    return familyTreeHtml;
+        //}
+
         private string GenerateHtmlFamilyTree()
         {
-            string familyTreeHtml = "";
-            foreach (var testator in Inheritance.GetTestators())
+            // Recursive function to build HTML for a person and their descendants.
+            string BuildDescendantHtml(Person person)
             {
-                familyTreeHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {testator.Name}</p>";
-            }
-            foreach (var heir in Inheritance.GetHeirs())
-            {
-                familyTreeHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {heir.Name}</p>";
+                string html = $@"<div class=""familyTreePerson testator border border-dark border-1 rounded-3"">
+            Name: {person.Name}
+        </div>";
+
+                // Handle children (if any).
+                if (person.Children.Count > 0)
+                {
+                    html += @"<div class=""familyTreeChildren"">";
+                    foreach (var child in person.Children)
+                    {
+                        html += BuildDescendantHtml(child);
+                    }
+                    html += "</div>";
+                }
+
+                return html;
             }
 
+            // Helper function to generate ancestor HTML for a single person.
+            string BuildAncestorHtml(Person person, int generationLevel)
+            {
+                string generationClass = generationLevel == 1 ? "parent" : "grandparent";
+                string html = $@"<div class=""familyTreePerson {generationClass} border border-dark border-1 rounded-3"">
+            Name: {person.Name}
+        </div>";
+                return html;
+            }
+
+            // Main HTML container for the family tree.
+            string familyTreeHtml = @"<div id=""familyTreeContainer"">";
+
+            // Fetch the testator(s) (only once).
+            var testators = Inheritance.GetTestators();
+            foreach (var testator in testators)
+            {
+                familyTreeHtml += @"<div id=""familyTreeTestatorsContainer""><h3>Testator</h3>";
+
+                // Build ancestors manually from the testator's data.
+                familyTreeHtml += @"<div id=""familyTreeParentsContainer""><h4>Parents & Grandparents</h4>";
+
+                // Assume the testator object has properties `Parents` and `GrandParents`.
+                if (testator.Parents != null)
+                {
+                    foreach (var parent in testator.Parents)
+                    {
+                        familyTreeHtml += BuildAncestorHtml(parent, 1); // Generation level 1 = parents.
+
+                        // Build grandparents.
+                        if (parent.Parents != null)
+                        {
+                            foreach (var grandparent in parent.Parents)
+                            {
+                                familyTreeHtml += BuildAncestorHtml(grandparent, 2); // Generation level 2 = grandparents.
+                            }
+                        }
+                    }
+                }
+                familyTreeHtml += "</div>"; // Close Parents & Grandparents container.
+
+                // Build descendants.
+                familyTreeHtml += @"<div id=""familyTreeDescendantsContainer""><h4>Descendants</h4>";
+                familyTreeHtml += BuildDescendantHtml(testator);
+                familyTreeHtml += "</div></div>";
+            }
+
+            familyTreeHtml += "</div>"; // Close the main container.
             return familyTreeHtml;
         }
+
     }
 }

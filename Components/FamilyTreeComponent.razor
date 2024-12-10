@@ -1,33 +1,102 @@
 @using Testament_App.Models
 @rendermode InteractiveServer
-@if (Inheritance.GetTestators().Any())
-{
-    <h2>Stamtræ:</h2>
-    <h3>Testators:</h3>
-    @foreach (var testator in Inheritance.GetTestators())
+@inject IJSRuntime JSRuntime
+
+<div class="container p-3 border border-dark border-1 rounded-3">
+    <div id="familyTree">
+
+        <div id="familyTreeGrandParentsContainer" class="generation"></div>
+        <div id="familyTreeParentsContainer" class="generation"></div>
+        <div id="familyTreeTestatorsContainer" class="generation"></div>
+        <div id="familyTreeChildrenContainer" class="generation"></div>
+        <div id="familyTreeGrandChildrenContainer" class="generation"></div>
+    </div>
+
+    <div id="familyTree">
+        <div class="generation">
+            <div class="familyTreePerson" id="grandParent1">Grandparent 1</div>
+            <div class="familyTreePerson" id="grandParent2">Grandparent 2</div>
+        </div>
+        <div class="generation">
+            <div class="familyTreePerson" id="parent1">Parent 1</div>
+            <div class="familyTreePerson" id="parent2">Parent 2</div>
+        </div>
+        <div class="generation">
+            <div class="familyTreePerson" id="child1">Child 1</div>
+            <div class="familyTreePerson" id="child2">Child 2</div>
+            <div class="familyTreePerson" id="child3">Child 3</div>
+        </div>
+    </div>
+
+    @if (Inheritance.GetTestators().Any())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => testatorModal.Open(EditTestator, DeleteTestator, testator)">Name: @testator.Name</p>
+        <h2>Stamtræ:</h2>
+        <h3>Arveladere:</h3>
+        @foreach (var testator in Inheritance.GetTestators())
+        {
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => testatorModal.Open(EditTestator, DeleteTestator, testator)">Name: @testator.Name</p>
+        }
+        <h3>Heirs:</h3>
+        @foreach (var heir in Inheritance.GetHeirs())
+        {
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => personModal.Open(EditHeir, DeleteHeir, heir)">Name: @heir.Name</p>
+        }
     }
-    <h3>Heirs:</h3>
-    @foreach (var heir in Inheritance.GetHeirs())
-    {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => personModal.Open(EditHeir, DeleteHeir, heir)">Name: @heir.Name</p>
-    }
-}
-<button class="button" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
-<button class="button" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
-<PersonModal @ref="personModal"/>
-<TestatorModal @ref="testatorModal"/>
+    <button class="button" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny arvelader</button>
+    <button class="button" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
+    <PersonModal @ref="personModal" />
+    <TestatorModal @ref="testatorModal" />
+</div>
 
 @code {
     private PersonModal personModal = new();
     private TestatorModal testatorModal = new();
+    private ElementReference familyTree;
 
     protected override void OnAfterRender(bool firstRender)
     {
         // Opens pop-up for adding testator if none are present is checked each render-cycle
         if (!Inheritance.GetTestators().Any()) testatorModal.Open(SubmitTestator);
         base.OnAfterRender(firstRender);
+        GenerateHtmlFamilyTree();
+    }
+
+    private async Task GenerateHtmlFamilyTree()
+    {
+        string grandParentsHtml = "";
+        string parentsHtml = "";
+        string testatorsHtml = "";
+        string childrenHtml = "";
+        string grandChildrenHtml = "";
+        foreach (Person testator in Inheritance.GetTestators())
+        {
+            if (testator.Children.Count > 0)
+            {
+                testatorsHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {testator.Name}</p>";
+                foreach (Person child in testator.GetChildren())
+                {
+                    childrenHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {child.Name}</p>";
+                    foreach (Person grandChild in child.GetChildren())
+                    {
+                        grandChildrenHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {grandChild.Name}</p>";
+                    }
+                }
+                foreach (Person parent in testator.GetAncestors())
+                {
+                    parentsHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {parent.Name}</p>";
+                    foreach (Person grandParent in parent.GetAncestors())
+                    {
+                        grandParentsHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {grandParent.Name}</p>";
+                    }
+                }
+            }
+        }
+
+        await JSRuntime.InvokeVoidAsync("addFamilyTree", "familyTreeGrandParentsContainer", grandParentsHtml);
+        await JSRuntime.InvokeVoidAsync("addFamilyTree", "familyTreeParentsContainer", parentsHtml);
+        await JSRuntime.InvokeVoidAsync("addFamilyTree", "familyTreeTestatorsContainer", testatorsHtml);
+        await JSRuntime.InvokeVoidAsync("addFamilyTree", "familyTreeChildrenContainer", childrenHtml);
+        await JSRuntime.InvokeVoidAsync("addFamilyTree", "familyTreeGrandChildrenContainer", grandChildrenHtml);
     }
 
     private async void SubmitTestator(Testator testator)
@@ -84,7 +153,7 @@
             throw;
         }
     }
-    
+
     private async void EditHeir(Person heir)
     {
         //InvokeAsync(StateHasChanged);

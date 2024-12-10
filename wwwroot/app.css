@@ -119,3 +119,50 @@ h1:focus {
 .modal-content {
     background-color: var(--secondary-bg);
 }
+
+/* ---------------------------- Family Tree ---------------------------- */
+
+#familyTree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    gap: 30px;
+}
+
+.generation {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    position: relative;
+}
+
+.familyTreePerson {
+    padding: 10px 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+    position: relative;
+}
+
+    .familyTreePerson::before {
+        content: "";
+        position: absolute;
+        top: -15px; /* Adjust to connect to the parent generation */
+        left: 50%;
+        width: 2px;
+        height: 15px;
+        background: black;
+        transform: translateX(-50%);
+    }
+
+.generation:first-child .familyTreePerson::before {
+    display: none; /* No lines for the first generation */
+}
+
+.connection {
+    position: absolute;
+    height: 2px;
+    background: black;
+    z-index: 1;
+}

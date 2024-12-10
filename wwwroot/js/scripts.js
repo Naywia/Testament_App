@@ -27,3 +27,10 @@ function downloadFile(fileBytes, fileName) {
     window.URL.revokeObjectURL(url);
 }
 
+// The code has to reference HTML elements and add people to their respective elements after generating them.
+function addFamilyTree(id, html) {
+    //alert(id);
+    document.getElementById(id).innerHTML = html;
+}
+
+// Each container holds
