@@ -108,6 +108,12 @@ h1:focus {
     width: 100%;
 }
 
+/* ---------------------------- Overview ---------------------------- */
+
+.container {
+    background-color: var(--secondary-bg);
+}
+
 /* ---------------------------- Modal ---------------------------- */
 
 .modal-content {

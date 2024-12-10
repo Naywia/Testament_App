@@ -1,6 +1,7 @@
+@using Testament_App.Models
 @rendermode InteractiveServer
 <div class="modal fade @ModalClass" id="thing" tabindex="-1" role="dialog" style="display:@ModalDisplay" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document" > 
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Tilføj Testator</h5>
@@ -9,20 +10,23 @@
                 </button>
             </div>
             <div class="modal-body">
-                <label>
-                    Navn:
+                <div>
+                    <label>Navn: </label>
                     <InputText @bind-value="editTestator.Name"></InputText>
-                </label>
-                <label>
-                    Fødselsdag:
+                </div>
+
+                <div>
+                    <label>Fødselsdag: </label>
                     <InputDate TValue="DateOnly" @bind-Value="editTestator.Birthday"></InputDate>
-                </label>
-                <label>
-                    ErDød?:
+                </div>
+
+                <div>
+                    <label>Er personen død?: </label>
                     <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
-                </label>
-                <label>
-                    Børn:
+                </div>
+
+                <div>
+                    <label>Børn: </label>
                     @foreach (var child in editTestator.Children)
                     {
                         <p>@child.Name</p>
@@ -38,9 +42,10 @@
                         }
                     </InputSelect>
                     <button @onclick="() => editTestator.AddChild(selectedChild)">Tilføj barn</button>
-                </label>
-                <label>
-                    forældre:
+                </div>
+
+                <div>
+                    <label>Forældre: </label>
                     @foreach (var parent in editTestator.Parents)
                     {
                         <p>@parent.Name</p>
@@ -56,15 +61,15 @@
                         }
                     </InputSelect>
                     <button @onclick="() => editTestator.AddParent(selectedParent)">Tilføj forælder</button>
-                </label>
+                </div>
             </div>
             <div class="modal-footer">
                 @if (CommandDelete != null)
                 {
-                    <button type="button" class="btn btn-warning" @onclick="() => { CommandDelete(editTestator); Close(); }">Fjern arvelader</button>
+                    <button class="btn btn-warning" @onclick="() => { CommandDelete(editTestator); Close(); }">Fjern arvelader</button>
                 }
-                <button type="button" class="button" @onclick="() => { Command(editTestator); Close(); }">Tilføj arvelader</button>
-                <button type="button" class="button-cancel" data-dismiss="modal" @onclick="Close">Annuller</button>
+                <button class="button" @onclick="() => { Command(editTestator); Close(); }">Tilføj arvelader</button>
+                <button class="button-cancel" data-dismiss="modal" @onclick="Close">Annuller</button>
             </div>
         </div>
     </div>
@@ -91,7 +96,7 @@
     private Person? selectedParent => _persons.First(d => d.Name == selectedParentName);
     private String? selectedChildName { get; set; } = null;
     private Person? selectedChild => _persons.First(d => d.Name == selectedChildName);
-    
+
     protected override void OnParametersSet()
     {
         editTestator = new();
@@ -116,7 +121,7 @@
             throw;
         }
     }
-    
+
     public async void Open(Action<Testator> edit, Action<Testator> delete, Testator testator)
     {
         ModalDisplay = "block;";

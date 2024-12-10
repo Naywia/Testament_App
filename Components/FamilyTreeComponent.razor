@@ -1,7 +1,8 @@
+@using Testament_App.Models
 @rendermode InteractiveServer
 @if (Inheritance.GetTestators().Any())
 {
-    <h2>FamilyTree:</h2>
+    <h2>Stamtræ:</h2>
     <h3>Testators:</h3>
     @foreach (var testator in Inheritance.GetTestators())
     {
@@ -13,8 +14,8 @@
         <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => personModal.Open(EditHeir, DeleteHeir, heir)">Name: @heir.Name</p>
     }
 }
-<button class="btn button" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
-<button class="btn button" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
+<button class="button" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
+<button class="button" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
 <PersonModal @ref="personModal"/>
 <TestatorModal @ref="testatorModal"/>
 
