@@ -2,7 +2,7 @@ namespace Testament_App.Models;
 
 public static class Inheritance
 {
-    //private List<Asset>
+    private static List<Asset> assets = new ();
     private static List<Testator> _testators = new();
     private static List<Person> _heirs = new();
     //private static List<Beneficiary> _testators = new();
@@ -33,6 +33,10 @@ public static class Inheritance
     public static Person[] GetHeirs()
     {
         return _heirs.ToArray();
+    }
+    public static void AddAsset(Asset asset)
+    {
+        assets.Add(asset);
     }
 
     public static void DeleteHeir(Person heir)

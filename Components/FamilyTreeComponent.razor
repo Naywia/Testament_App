@@ -5,22 +5,42 @@
     <h3>Testators:</h3>
     @foreach (var testator in Inheritance.GetTestators())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => testatorModal.Open(EditTestator, DeleteTestator, testator)">Name: @testator.Name</p>
+        <div class="d-flex">
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;"
+                @onclick="() => testatorModal.Open(EditTestator, DeleteTestator, testator)">Name: @testator.Name</p>
+            @foreach (var asset in testator.GetAssets())
+            {
+                <p class="border border-dark border-1 rounded-3" style="width: 100px;">Asset: @asset.Name </p>
+            }
+        </div>
     }
+
     <h3>Heirs:</h3>
     @foreach (var heir in Inheritance.GetHeirs())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => personModal.Open(EditHeir, DeleteHeir, heir)">Name: @heir.Name</p>
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;"
+            @onclick="() => personModal.Open(EditHeir, DeleteHeir, heir)">Name: @heir.Name</p>
     }
+
+    <button class="btn btn-primary"
+        @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny
+        testator</button>
+    <button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
+    <button class="btn btn-primary" @onclick="() => assetModal.Open(SubmitAsset)">Tilføj ny asset</button>
 }
-<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) testatorModal.Open(SubmitTestator); }">Tiløj ny testator</button>
-<button class="btn btn-primary" @onclick="() => personModal.Open(SubmitHeir)">Tiløj ny arving</button>
-<PersonModal @ref="personModal"/>
-<TestatorModal @ref="testatorModal"/>
+
+<PersonModal @ref="personModal" />
+<TestatorModal @ref="testatorModal" />
+<AssetModal @ref="assetModal" />
 
 @code {
+    private Testator? editTestator { get; set; }
+    private Person? editHeir { get; set; }
+    private Asset? editAsset { get; set; }
+
     private PersonModal personModal = new();
     private TestatorModal testatorModal = new();
+    private AssetModal assetModal = new();
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -28,9 +48,17 @@
         if (!Inheritance.GetTestators().Any()) testatorModal.Open(SubmitTestator);
         base.OnAfterRender(firstRender);
     }
+    protected override void OnInitialized()
+    {
+        editTestator = new();
+        editHeir = new();
+        editAsset = new();
+        base.OnInitialized();
+    }
 
     private async void SubmitTestator(Testator testator)
     {
+
         Inheritance.AddTestator(testator);
         try
         {
@@ -83,7 +111,7 @@
             throw;
         }
     }
-    
+
     private async void EditHeir(Person heir)
     {
         //InvokeAsync(StateHasChanged);
@@ -111,4 +139,11 @@
             throw;
         }
     }
+
+    private void SubmitAsset(Asset asset)
+    {
+        Inheritance.AddAsset(asset);
+        InvokeAsync(StateHasChanged);
+    }
+
 }
