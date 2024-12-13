@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document" > 
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Tilføj thing</h5>
+                <h5 class="modal-title">@Title</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -17,13 +17,13 @@
             <div class="modal-footer">
                 @if (_parameters["EditIndex"] != null)
                 {
-                     <button type="button" class="btn btn-warning" @onclick="Delete">Delete</button> 
+                     <button type="button" class="btn btn-warning" @onclick="Delete">Slet</button> 
                 }
                 else
                 {
-                    <button type="button" class="btn btn-primary" @onclick="Submit">AddItem</button>
+                    <button type="button" class="btn btn-primary" @onclick="Submit">Tilføj</button>
                 }
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Luk</button>
             </div>
         </div>
     </div>
@@ -41,6 +41,7 @@
     private String ModalDisplay = "none;";
     private String ModalClass = "visually-hidden";
     //private bool ShowBackdrop = false;
+    private String Title;
     private Action CommandUpdate;
 
     //private readonly Dictionary<String, Type> components = new()
@@ -64,6 +65,7 @@
         //selectedType = components[componentType];
         selectedType = componentType;
         _parameters["EditIndex"] = null;
+        Title = "Tilføj";
         try
         {
             await InvokeAsync(StateHasChanged);
@@ -85,6 +87,7 @@
         //selectedType = components[componentType];
         selectedType = componentType;
         _parameters["EditIndex"] = index;
+        Title = "Rediger";
         //if (selectedType == typeof(PersonEdit))
         //{
         //    Console.WriteLine($"Submitting Heir");
