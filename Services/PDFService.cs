@@ -346,7 +346,7 @@ namespace Testament_App.Services
 
         #region Import
 
-        public void ImportPdf(byte[] pdfBytes)
+        public void ImportPdf(byte[] pdfBytes, string password)
         {
             if (pdfBytes == null || pdfBytes.Length == 0)
             {
@@ -355,6 +355,11 @@ namespace Testament_App.Services
 
             try
             {
+                var passwordBytes = Encoding.UTF8.GetBytes(password);
+                var readerProperties = new ReaderProperties().SetPassword(passwordBytes);
+
+                // Open the PDF
+                using var reader = new PdfReader(new MemoryStream(pdfBytes), readerProperties);
                 using var pdfReader = new PdfReader(new MemoryStream(pdfBytes));
                 using var pdfDocument = new PdfDocument(pdfReader);
 

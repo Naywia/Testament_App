@@ -99,17 +99,17 @@
             await stream.ReadAsync(pdfContent);
 
             // Send the file and password to the PDF service
-            var result = await PdfService.ImportPdfAsync(pdfContent, PdfPassword);
+            PdfService.ImportPdf(pdfContent, PdfPassword);
 
-            if (result.Success)
-            {
-                FileMessage = "PDF importeret med succes!";
-                CloseModal();
-            }
-            else
-            {
-                FileMessage = $"Fejl: {result.ErrorMessage}";
-            }
+            // if (result.Success)
+            // {
+            //     FileMessage = "PDF importeret med succes!";
+            //     CloseModal();
+            // }
+            // else
+            // {
+            //     FileMessage = $"Fejl: {result.ErrorMessage}";
+            // }
         }
         catch (Exception ex)
         {

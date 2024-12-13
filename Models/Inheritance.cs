@@ -62,6 +62,7 @@ public static class Inheritance
         }
 
         return nextId;
+    }
     
     public static void AddAsset(Asset asset)
     {
