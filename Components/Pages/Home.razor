@@ -93,12 +93,10 @@
 
         try
         {
-            // Read the file into memory
             using var stream = SelectedFile.OpenReadStream(maxAllowedSize: 10_000_000);
-            var pdfContent = new byte[SelectedFile.Size];
-            await stream.ReadAsync(pdfContent);
-
-            // Send the file and password to the PDF service
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            byte[] pdfContent = memoryStream.ToArray();
             var result = PdfService.ImportPdf(pdfContent, PdfPassword);
 
             if (result.Success)
