@@ -1,0 +1,187 @@
+@rendermode InteractiveServer
+<div class="modal fade @ModalClass" id="thing" tabindex="-1" role="dialog" style="display:@ModalDisplay" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" > 
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tilføj thing</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if (selectedType != null)
+                {
+                    <DynamicComponent Type="selectedType" @ref="_dynamicComponent" Parameters="_parameters"/>
+                }
+            </div>
+            <div class="modal-footer">
+                @if (_parameters["EditIndex"] != null)
+                {
+                     <button type="button" class="btn btn-warning" @onclick="Delete">Delete</button> 
+                }
+                else
+                {
+                    <button type="button" class="btn btn-primary" @onclick="Submit">AddItem</button>
+                }
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop @ModalClass"></div>
+@*
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop @ModalClass"></div>
+}
+*@
+
+@code {
+    private String ModalDisplay = "none;";
+    private String ModalClass = "visually-hidden";
+    //private bool ShowBackdrop = false;
+    private Action CommandUpdate;
+
+    //private readonly Dictionary<String, Type> components = new()
+    //{
+    //    [nameof(PersonEdit)] = typeof(PersonEdit),
+    //    [nameof(TestatorEdit)] = typeof(TestatorEdit),
+    //};
+    private Type selectedType;
+    private DynamicComponent? _dynamicComponent = new();
+    private Dictionary<String, Object> _parameters = new()
+    {
+        ["EditIndex"] = null,
+    };
+    
+    public async void Open(Type componentType, Action update)
+    {
+        ModalDisplay = "block;";
+        ModalClass = "show";
+        //ShowBackdrop = true;
+        CommandUpdate = update;
+        //selectedType = components[componentType];
+        selectedType = componentType;
+        _parameters["EditIndex"] = null;
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    // get instance of the item to edit and parse it or use id thing
+    public async void Open(Type componentType, Int32 index, Action update)
+    {
+        ModalDisplay = "block;";
+        ModalClass = "show";
+        //ShowBackdrop = true;
+        CommandUpdate = update;
+        //selectedType = components[componentType];
+        selectedType = componentType;
+        _parameters["EditIndex"] = index;
+        //if (selectedType == typeof(PersonEdit))
+        //{
+        //    Console.WriteLine($"Submitting Heir");
+        //    (_dynamicComponent.Instance as PersonEdit)?.Submit();
+        //}
+        //else if (selectedType == typeof(TestatorEdit))
+        //{
+        //    Console.WriteLine($"Submitting Testator");
+        //    (_dynamicComponent.Instance as TestatorEdit)?.Submit();
+        //}
+        //else
+        //{
+        //    Console.WriteLine($"Unsupported type found during submission");
+        //}
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async Task Close()
+    {
+        ModalDisplay = "none;";
+        ModalClass = "visually-hidden";
+        //ShowBackdrop = false;
+        _parameters["EditIndex"] = null;
+        CommandUpdate();
+    }
+
+    private async Task Submit()
+    {
+        Console.WriteLine($"Selected Type: {selectedType}");
+        //switch (selectedType)
+        //{
+        //    case Type _ when selectedType == typeof(PersonEdit):
+        //        (_dynamicComponent.Instance as PersonEdit)?.Submit();
+        //        Console.WriteLine("Handling Person type");
+        //        break;
+        //    case Type _ when selectedType == typeof(TestatorEdit):
+        //        (_dynamicComponent.Instance as TestatorEdit)?.Submit();
+        //        Console.WriteLine("Handling Testator type");
+        //        break;
+        //    default:
+        //        // Handle other types
+        //        Console.WriteLine("Handling other type");
+        //        break;
+        //}
+        
+        if (selectedType == typeof(PersonEdit))
+        {
+            Console.WriteLine($"Submitting Heir");
+            (_dynamicComponent.Instance as PersonEdit)?.Submit();
+        }
+        else if (selectedType == typeof(TestatorEdit))
+        {
+            Console.WriteLine($"Submitting Testator");
+            (_dynamicComponent.Instance as TestatorEdit)?.Submit();
+        }
+        else if (selectedType == typeof(AssetEdit))
+        {
+            Console.WriteLine($"Submitting Asset");
+            (_dynamicComponent.Instance as AssetEdit)?.Submit();
+        }
+        else
+        {
+            Console.WriteLine($"Unsupported type found during submission");
+        }
+        await Close();
+    }
+    
+    private async Task Delete()
+    {
+        Console.WriteLine($"Selected Type: {selectedType}");
+        if (selectedType == typeof(PersonEdit))
+        {
+            Console.WriteLine($"Submitting Heir");
+            (_dynamicComponent.Instance as PersonEdit)?.Delete();
+        }
+        else if (selectedType == typeof(TestatorEdit))
+        {
+            Console.WriteLine($"Submitting Testator");
+            (_dynamicComponent.Instance as TestatorEdit)?.Delete();
+        }
+        else if (selectedType == typeof(AssetEdit))
+        {
+            Console.WriteLine($"Submitting Asset");
+            (_dynamicComponent.Instance as AssetEdit)?.Delete();
+        }
+        else
+        {
+            Console.WriteLine($"Unsupported type found during submission");
+        }
+        await Close();
+    }
+}
