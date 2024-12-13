@@ -2,6 +2,7 @@
 using iText.IO.Font;
 using iText.IO.Image;
 using iText.Kernel.Colors;
+using iText.Kernel.Exceptions;
 using iText.Kernel.Font;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
@@ -342,5 +343,74 @@ namespace Testament_App.Services
             return familyTreeHtml;
         }
 
+
+        #region Import
+
+        public void ImportPdf(byte[] pdfBytes)
+        {
+            if (pdfBytes == null || pdfBytes.Length == 0)
+            {
+                throw new ArgumentException("Invalid PDF data.");
+            }
+
+            try
+            {
+                using var pdfReader = new PdfReader(new MemoryStream(pdfBytes));
+                using var pdfDocument = new PdfDocument(pdfReader);
+
+                // Extract metadata
+                var info = pdfDocument.GetDocumentInfo();
+                Console.WriteLine($"Title: {info.GetTitle()}");
+                Console.WriteLine($"Author: {info.GetAuthor()}");
+                Console.WriteLine($"Creation Date: {info.GetMoreInfo("CreationDate")}");
+
+                // Look for the embedded family tree JSON
+                string familyTreeJson = info.GetMoreInfo("FamilyTreeJSON");
+                if (string.IsNullOrEmpty(familyTreeJson))
+                {
+                    Console.WriteLine("No FamilyTreeJSON metadata found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error importing PDF: {ex.Message}");
+            }
+        }
+
+        public async Task<(bool Success, string ErrorMessage)> ImportPdfAsync(byte[] pdfContent, string password)
+        {
+            try
+            {
+                // Convert the password to a byte array
+                var passwordBytes = Encoding.UTF8.GetBytes(password);
+
+                // Set up ReaderProperties with the password
+                var readerProperties = new ReaderProperties().SetPassword(passwordBytes);
+
+                // Open the PDF
+                using var reader = new PdfReader(new MemoryStream(pdfContent), readerProperties);
+                using var pdfDoc = new PdfDocument(reader);
+
+                // Validate the PDF content
+                if (pdfDoc.GetNumberOfPages() > 0)
+                {
+                    // You can handle the imported PDF here (e.g., save to a database, parse content, etc.)
+                    return (true, string.Empty);
+                }
+                else
+                {
+                    return (false, "PDF'en indeholder ingen sider.");
+                }
+            }
+            catch (BadPasswordException)
+            {
+                return (false, "Forkert adgangskode. Prøv igen.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Fejl ved behandling af PDF: {ex.Message}");
+            }
+        }
+        #endregion
     }
 }

@@ -116,6 +116,12 @@ h1:focus {
 
 /* ---------------------------- Modal ---------------------------- */
 
+.modal.show {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.5); /* Backdrop effect */
+}
+
+
 .modal-content {
     background-color: var(--secondary-bg);
 }

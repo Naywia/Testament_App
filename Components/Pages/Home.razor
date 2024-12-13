@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject NavigationManager NavManager
+@inject PDFService PdfService
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -26,7 +27,7 @@
 
     <div id="buttons-cointainer">
         <div id="input-div">
-            <InputFile id="file-input" OnChange="ImportPDF" accept="application/pdf" class="visually-hidden" /> @* visually-hidden is Bootstrap and hides the input. *@
+            <InputFile id="file-input" OnChange="OnFileSelected" accept="application/pdf" class="visually-hidden" /> @* visually-hidden is Bootstrap and hides the input. *@
             <label id="input-button" for="file-input" class="button">Importer PDF</label>
 
             @if (!string.IsNullOrEmpty(FileMessage))
@@ -39,23 +40,89 @@
     </div>
 </section>
 
+<!-- Modal for Password Prompt -->
+<div class="modal @(ShowPasswordModal ? "show" : "")" tabindex="-1" style="display: @(ShowPasswordModal ? "block" : "none");">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Indtast PDF-adgangskode</h5>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="CloseModal"></button>
+            </div>
+            <div class="modal-body">
+                <InputText @bind-Value="PdfPassword" placeholder="Adgangskode" type="password" class="form-control" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="ProcessPDF">Bekræft</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @code {
     private string FileMessage { get; set; } = "";
+    private string PdfPassword { get; set; } = "";
+    private bool ShowPasswordModal { get; set; } = false;
 
-    private void ImportPDF(InputFileChangeEventArgs e)
+    private IBrowserFile SelectedFile { get; set; } = null!;
+
+    private void OnFileSelected(InputFileChangeEventArgs e)
     {
         var file = e.File;
 
         // Ensure the file is a PDF
         if (file.ContentType == "application/pdf")
         {
-            FileMessage = "Uploadet fil: " + file.Name;
+            SelectedFile = file;
+            ShowPasswordModal = true; // Show the modal to get the password
         }
         else
         {
             FileMessage = "Ugyldig filtype. Kun PDF er godtaget.";
         }
 
+        StateHasChanged();
+    }
+
+    private async Task ProcessPDF()
+    {
+        if (SelectedFile == null)
+        {
+            FileMessage = "Ingen fil valgt.";
+            return;
+        }
+
+        try
+        {
+            // Read the file into memory
+            using var stream = SelectedFile.OpenReadStream(maxAllowedSize: 10_000_000);
+            var pdfContent = new byte[SelectedFile.Size];
+            await stream.ReadAsync(pdfContent);
+
+            // Send the file and password to the PDF service
+            var result = await PdfService.ImportPdfAsync(pdfContent, PdfPassword);
+
+            if (result.Success)
+            {
+                FileMessage = "PDF importeret med succes!";
+                CloseModal();
+            }
+            else
+            {
+                FileMessage = $"Fejl: {result.ErrorMessage}";
+            }
+        }
+        catch (Exception ex)
+        {
+            FileMessage = $"Error processing PDF: {ex.Message}";
+        }
+
+        StateHasChanged();
+    }
+
+    private void CloseModal()
+    {
+        ShowPasswordModal = false;
+        PdfPassword = "";
         StateHasChanged();
     }
 
