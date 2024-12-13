@@ -21,13 +21,14 @@
 }
 <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny testator</button>
 <button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit), Update)">Tilføj ny arving</button>
+<button class="btn btn-primary" @onclick="() => modal.Open(typeof(AssetEdit), Update)">Tilføj ny asset</button>
 
-<AssetModal @ref="assetModal" />
+@* <AssetEdit @ref="assetModal" /> *@
 <Modal @ref="modal"/>
 
 @code {
     private Modal modal = new();
-    private AssetModal assetModal = new();
+    //private AssetEdit assetModal = new();
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -49,9 +50,9 @@
         }
     }
 
-    private void SubmitAsset(Asset asset)
-    {
-        Inheritance.AddAsset(asset);
-        InvokeAsync(StateHasChanged);
-    }
+    //private void SubmitAsset(Asset asset)
+    //{
+    //    Inheritance.AddAsset(asset);
+    //    InvokeAsync(StateHasChanged);
+    //}
 }

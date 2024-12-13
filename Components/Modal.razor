@@ -148,6 +148,11 @@
             Console.WriteLine($"Submitting Testator");
             (_dynamicComponent.Instance as TestatorEdit)?.Submit();
         }
+        else if (selectedType == typeof(AssetEdit))
+        {
+            Console.WriteLine($"Submitting Testator");
+            (_dynamicComponent.Instance as AssetEdit)?.Submit();
+        }
         else
         {
             Console.WriteLine($"Unsupported type found during submission");
@@ -167,6 +172,11 @@
         {
             Console.WriteLine($"Submitting Testator");
             (_dynamicComponent.Instance as TestatorEdit)?.Delete();
+        }
+        else if (selectedType == typeof(AssetEdit))
+        {
+            Console.WriteLine($"Submitting Testator");
+            (_dynamicComponent.Instance as AssetEdit)?.Delete();
         }
         else
         {

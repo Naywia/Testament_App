@@ -37,14 +37,25 @@ public static class Inheritance
     {
         return _heirs.ToArray();
     }
-    public static void AddAsset(Asset asset)
-    {
-        assets.Add(asset);
-    }
 
     public static void DeleteHeir(Person heir)
     {
         _heirs.Remove(heir);
         FamilyTree.RemoveMember(heir);
+    }
+    
+    public static void AddAsset(Asset asset)
+    {
+        assets.Add(asset);
+    }
+    
+    public static Asset[] GetAssets()
+    {
+        return assets.ToArray();
+    }
+
+    public static void DeleteAsset(Asset asset)
+    {
+        assets.Remove(asset);
     }
 }
