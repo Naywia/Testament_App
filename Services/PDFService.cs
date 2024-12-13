@@ -336,10 +336,14 @@ namespace Testament_App.Services
                     Console.WriteLine($"Creation Date: {info.GetMoreInfo("CreationDate")}");
 
                     // Look for the embedded family tree JSON
-                    string familyTreeJson = info.GetMoreInfo("FamilyTreeJSON");
-                    if (string.IsNullOrEmpty(familyTreeJson))
+                    string familyTreeInfo = info.GetMoreInfo("FamilyTreeInfo");
+                    if (string.IsNullOrEmpty(familyTreeInfo))
                     {
-                        Console.WriteLine("No FamilyTreeJSON metadata found.");
+                        Console.WriteLine("No FamilyTreeInfo metadata found.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{familyTreeInfo}");
                     }
 
                     return new(true, string.Empty);
