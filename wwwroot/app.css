@@ -110,8 +110,24 @@ h1:focus {
 
 /* ---------------------------- Overview ---------------------------- */
 
+#overview-content {
+    display: flex;
+    flex: 1;
+    gap: 45px;
+}
+
+#export-btn {
+    position: absolute;
+    right: 5em;
+}
+
 .container {
     background-color: var(--secondary-bg);
+    max-width: none !important;
+}
+
+#pie {
+    width: 40%;
 }
 
 /* ---------------------------- Modal ---------------------------- */

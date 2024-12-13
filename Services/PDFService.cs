@@ -315,27 +315,19 @@ namespace Testament_App.Services
         {
             try
             {
-                // Convert the password to a byte array
+                // Convert the password to a byte array and add it to ReaderProperties
                 var passwordBytes = Encoding.UTF8.GetBytes(password);
-
-                // Set up ReaderProperties with the password
                 var readerProperties = new ReaderProperties().SetPassword(passwordBytes);
 
-                // Open the PDF
+                // Open the PDF and validate the contents
                 using var reader = new PdfReader(new MemoryStream(pdfContent), readerProperties);
                 using var pdfDocument = new PdfDocument(reader);
-
-                // Validate the PDF content
+                                
                 if (pdfDocument.GetNumberOfPages() > 0)
                 {
-                    // You can handle the imported PDF here (e.g., save to a database, parse content, etc.)
-
                     var info = pdfDocument.GetDocumentInfo();
-                    Console.WriteLine($"Title: {info.GetTitle()}");
-                    Console.WriteLine($"Author: {info.GetAuthor()}");
-                    Console.WriteLine($"Creation Date: {info.GetMoreInfo("CreationDate")}");
 
-                    // Look for the embedded family tree JSON
+                    // Get info for the family tree
                     string familyTreeInfo = info.GetMoreInfo("FamilyTreeInfo");
                     if (string.IsNullOrEmpty(familyTreeInfo))
                     {
@@ -343,7 +335,9 @@ namespace Testament_App.Services
                     }
                     else
                     {
-                        Console.WriteLine($"{familyTreeInfo}");
+                        //Console.WriteLine($"{familyTreeInfo}");
+
+                        ImportService.ImportFamilyTreeFromJson(familyTreeInfo);
                     }
 
                     return new(true, string.Empty);

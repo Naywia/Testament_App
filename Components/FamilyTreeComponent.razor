@@ -3,6 +3,10 @@
 @inject IJSRuntime JSRuntime
 
 <div class="container p-3 border border-dark border-1 rounded-3">
+    <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny arvelader</button>
+    <button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit), Update)">Tilføj ny arving</button>
+    <button class="btn btn-primary" @onclick="() => modal.Open(typeof(AssetEdit), Update)">Tilføj nyt aktiv</button>
+
     <div id="familyTree">
 
         <div id="familyTreeGrandParentsContainer" class="generation"></div>
@@ -48,9 +52,6 @@
             <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), i, Update)">Name: @heir.Name</p>
         }
     }
-    <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny arvelader</button>
-    <button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit), Update)">Tilføj ny arving</button>
-    <button class="btn btn-primary" @onclick="() => modal.Open(typeof(AssetEdit), Update)">Tilføj nyt aktiv</button>
     @* <AssetEdit @ref="assetModal" /> *@
     <Modal @ref="modal" />
 </div>

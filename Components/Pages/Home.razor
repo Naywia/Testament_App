@@ -29,11 +29,6 @@
         <div id="input-div">
             <InputFile id="file-input" OnChange="OnFileSelected" accept="application/pdf" class="visually-hidden" /> @* visually-hidden is Bootstrap and hides the input. *@
             <label id="input-button" for="file-input" class="button">Importer PDF</label>
-
-            @if (!string.IsNullOrEmpty(FileMessage))
-            {
-                <p>@FileMessage</p>
-            }
         </div>
 
         <button id="continue" class="button" @onclick="NavigateToOverview">Start ny visning</button>
@@ -41,7 +36,7 @@
 </section>
 
 <!-- Modal for Password Prompt -->
-<div class="modal @(ShowPasswordModal ? "show" : "")" tabindex="-1" style="display: @(ShowPasswordModal ? "block" : "none");">
+<div class="modal fade @(ShowPasswordModal ? "show" : "") align-items-center justify-content-center" tabindex="-1" style="display: @(ShowPasswordModal ? "flex" : "none");">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -50,6 +45,11 @@
             </div>
             <div class="modal-body">
                 <InputText @bind-Value="PdfPassword" placeholder="Adgangskode" type="password" class="form-control" />
+
+                @if (!string.IsNullOrEmpty(FileMessage))
+                {
+                    <p>@FileMessage</p>
+                }
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" @onclick="ProcessPDF">Bekræft</button>
@@ -57,6 +57,7 @@
         </div>
     </div>
 </div>
+
 
 @code {
     private string FileMessage { get; set; } = "";
@@ -101,8 +102,7 @@
 
             if (result.Success)
             {
-                FileMessage = "PDF importeret med succes!";
-                CloseModal();
+                NavigateToOverview();
             }
             else
             {

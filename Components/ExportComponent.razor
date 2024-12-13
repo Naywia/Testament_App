@@ -1,29 +1,93 @@
-﻿@using Testament_App.Services
+﻿@using Microsoft.AspNetCore.Components.Forms
 @inject PDFService PdfService
 @inject IJSRuntime JSRuntime
 
 @rendermode InteractiveServer
 
 <!-- Button to trigger PDF generation and download -->
-<button @onclick="GenerateAndDownloadPdf" class="btn button">
-    Exporter PDF
-</button>
+<button id="export-btn" @onclick="OpenModal" class="button"> Exporter PDF </button>
+
+<!-- Password Modal -->
+<div class="modal fade @(ShowModal ? "show" : "") align-items-center justify-content-center" tabindex="-1" style="display: @(ShowModal ? "flex" : "none");">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Set PDF Password</h5>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="CloseModal"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="PasswordModel" OnValidSubmit="ValidateAndExport">
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <InputText id="password" type="password" class="form-control" @bind-Value="PasswordModel.Password" />
+                        @if (!string.IsNullOrEmpty(PasswordError))
+                        {
+                            <small class="text-danger">@PasswordError</small>
+                        }
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <InputText id="confirmPassword" type="password" class="form-control" @bind-Value="PasswordModel.ConfirmPassword" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Export</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
-    private async Task GenerateAndDownloadPdf()
+
+    private bool ShowModal { get; set; } = false;
+    private string PasswordError { get; set; } = string.Empty;
+    private PasswordInputModel PasswordModel { get; set; } = new();
+
+    private void OpenModal()
+    {
+        ShowModal = true;
+        PasswordError = string.Empty; // Clear any previous errors
+    }
+
+    private void CloseModal()
+    {
+        ShowModal = false;
+    }
+
+    private async Task GenerateAndDownloadPdf(string password)
     {
         // Generate PDF
-        var pdfBytes = PdfService.GeneratePdf();
+        var pdfBytes = PdfService.GeneratePdf(password);
 
         // Trigger the download of the generated PDF file
         var fileName = "Arvefordeleren.pdf";
-        await DownloadFile(pdfBytes, fileName);
+        await JSRuntime.InvokeVoidAsync("downloadFile", pdfBytes, fileName);
     }
 
-    private async Task DownloadFile(byte[] fileBytes, string fileName)
+    private async Task ValidateAndExport()
     {
-        // Use JavaScript Interop to trigger the file download
-        await JSRuntime.InvokeVoidAsync("downloadFile", fileBytes, fileName);
+        if (PasswordModel.Password != PasswordModel.ConfirmPassword)
+        {
+            PasswordError = "Passwords do not match.";
+        }
+        else if (string.IsNullOrWhiteSpace(PasswordModel.Password))
+        {
+            PasswordError = "Password cannot be empty.";
+        }
+        else
+        {
+            PasswordError = string.Empty;
+
+            // Export PDF logic here
+            await GenerateAndDownloadPdf(PasswordModel.Password);
+
+            // Close modal after successful export
+            CloseModal();
+        }
+    }
+
+    private class PasswordInputModel
+    {
+        public string Password { get; set; } = string.Empty;
+        public string ConfirmPassword { get; set; } = string.Empty;
     }
 }
-
