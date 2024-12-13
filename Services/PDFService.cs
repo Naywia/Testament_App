@@ -18,12 +18,7 @@ using Testament_App.Models;
 namespace Testament_App.Services
 {
     public class PDFService
-    { /// <summary>
-      /// Generates a comprehensive FamilyTree PDF report.
-      /// </summary>
-      /// <param name="familyTreeJson">JSON representation of the family tree.</param>
-      /// <returns>PDF file as a byte array.</returns>
-
+    { 
         private readonly PdfFont _headingFont;
         private readonly PdfFont _bodyFont;
 
