@@ -2,17 +2,19 @@ namespace Testament_App.Models;
 
 public static class Inheritance
 {
-    //private List<Asset>
+    private static List<Asset> assets = new ();
     private static List<Testator> _testators = new();
     private static List<Person> _heirs = new();
     //private static List<Beneficiary> _testators = new();
 
     public static void AddTestator(Testator testator)
     {
-        testator.Id = GetNextId();
-
-        _testators.Add(testator);
-        FamilyTree.AddMember(testator);
+        if (_testators.Count < 2)
+        {
+            testator.Id = GetNextId();
+            _testators.Add(testator);
+            FamilyTree.AddMember(testator);
+        }
     }
 
     public static Testator[] GetTestators()
@@ -60,5 +62,19 @@ public static class Inheritance
         }
 
         return nextId;
+    
+    public static void AddAsset(Asset asset)
+    {
+        assets.Add(asset);
+    }
+    
+    public static Asset[] GetAssets()
+    {
+        return assets.ToArray();
+    }
+
+    public static void DeleteAsset(Asset asset)
+    {
+        assets.Remove(asset);
     }
 }

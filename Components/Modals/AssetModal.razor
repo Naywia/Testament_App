@@ -1,0 +1,112 @@
+﻿@rendermode InteractiveServer
+<div class="modal fade @ModalClass" id="thing" tabindex="-1" role="dialog" style="display:@ModalDisplay" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tilføj aktiv</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label>
+                    Navn:
+                    <InputText @bind-value="editAsset.Name"></InputText>
+                </label>
+                <label>
+                    Værdi:
+                    <InputNumber @bind-Value="editAsset.Value"></InputNumber>
+                </label>
+                <label>
+                    Beskrivelse:
+                    <InputText @bind-Value="editAsset.Description"></InputText>
+                </label>
+
+                <label>
+                    Relation:
+
+                    <InputSelect @bind-Value="selectedTestatorName">
+                        @if (selectedTestatorName == null)
+                        {
+                            <option value="">none</option>
+                        }
+
+                        @foreach (var testator in _testators)
+                        {
+                            <option value="@testator.Name">@testator.Name</option>
+                        }
+
+                    </InputSelect>
+                    <button @onclick="()=> selectedTestator.AddAsset(editAsset)">Tilføj asset</button>
+                </label>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="() => { Submit(editAsset); Close(); }">AddItem</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop @ModalClass"></div>
+@*
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop @ModalClass"></div>
+} 
+*@
+
+@code {
+    private String ModalDisplay = "none;";
+    private String ModalClass = "visually-hidden";
+    private bool ShowBackdrop = false;
+    private Asset editAsset { get; set; }
+    private Testator editTestator { get; set; }
+    private IEnumerable<Testator> _testators => Inheritance.GetTestators();
+
+    private String? selectedTestatorName { get; set; } = null;
+    private Testator selectedTestator => _testators.First(t => t.Name == selectedTestatorName);
+    
+    private Action<Asset> Submit { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        editAsset = new();
+        base.OnParametersSet();
+    }
+
+    public async Task Open(Action<Asset> submit)
+    {
+        try
+        {
+            ModalDisplay = "block;";
+            ModalClass = "show";
+            ShowBackdrop = true;
+            editAsset = new();
+            Submit = submit;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async void Close()
+    {
+        try
+        {
+            ModalDisplay = "none;";
+            ModalClass = "visually-hidden";
+            ShowBackdrop = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+}

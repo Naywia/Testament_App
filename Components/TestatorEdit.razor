@@ -1,0 +1,106 @@
+@rendermode InteractiveServer
+<label>
+    Navn:
+    <InputText @bind-value="editTestator.Name"></InputText>
+</label>
+<label>
+    Fødselsdag:
+    <InputDate TValue="DateOnly" @bind-Value="editTestator.Birthday"></InputDate>
+</label>
+<label>
+    ErDød?:
+    <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
+</label>
+<label>
+    Børn:
+    @foreach (var child in editTestator.Children)
+    {
+        <p>@child.Name</p>
+    }
+    <InputSelect @bind-value="selectedChildName">
+        @if (selectedChildName == null)
+        {
+            <option selected value="">None</option>
+        }
+        @foreach (var person in _persons)
+        {
+            <option value="@person.Name">@person.Name</option>
+        }
+    </InputSelect>
+    <button @onclick="() => editTestator.AddChild(selectedChild)">Tilføj barn</button>
+</label>
+<label>
+    forældre:
+    @foreach (var parent in editTestator.Parents)
+    {
+        <p>@parent.Name</p>
+    }
+    <InputSelect @bind-value="selectedParentName">
+        @if (selectedParentName == null)
+        {
+            <option selected value="">None</option>
+        }
+        @foreach (var person in _persons)
+        {
+            <option value="@person.Name">@person.Name</option>
+        }
+    </InputSelect>
+    <button @onclick="() => editTestator.AddParent(selectedParent)">Tilføj forælder</button>
+</label>
+
+
+@code {
+    [Parameter]
+    public Int32? EditIndex { get; set; }
+    private Testator editTestator { get; set; }
+    private IEnumerable<Person> _persons => FamilyTree.GetMembers();
+    private String? selectedParentName { get; set; } = null;
+    private Person? selectedParent => _persons.First(d => d.Name == selectedParentName);
+    private String? selectedChildName { get; set; } = null;
+    private Person? selectedChild => _persons.First(d => d.Name == selectedChildName);
+
+    protected override void OnParametersSet()
+    {
+        if (EditIndex != null)
+        {
+            editTestator = Inheritance.GetTestators()[(Int32)EditIndex];
+            Console.WriteLine($"EditTestator: {editTestator.Name}");
+            InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            editTestator = new();
+        }
+        //Console.WriteLine("OnParametersSet");
+        base.OnParametersSet();
+    }
+    
+    public void Submit()
+    {
+        Inheritance.AddTestator(editTestator);
+        Reset();
+    }
+    
+    public void Delete()
+    {
+        Inheritance.DeleteTestator(editTestator);
+        Reset();
+    }
+
+    private void Reset()
+    {
+        try
+        {
+            InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        editTestator = new();
+        EditIndex = null;
+        selectedParentName = null;
+        selectedChildName = null;
+    }
+}
