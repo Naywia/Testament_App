@@ -145,46 +145,53 @@ h1:focus {
 /* ---------------------------- Family Tree ---------------------------- */
 
 #familyTree {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     position: relative;
-    gap: 30px;
+    margin: 20px auto;
+    width: 100%;
+    min-height: 500px;
+    opacity: 99.9;
 }
 
-.generation {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    position: relative;
-}
-
-.familyTreePerson {
-    padding: 10px 20px;
-    border: 1px solid black;
-    border-radius: 5px;
+div.node {
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    background-color: #339;
+    color: #efefef;
+    font-family: sans-serif;
+    font-size: 0.7em;
     text-align: center;
-    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    position: absolute;
 }
 
-    .familyTreePerson::before {
-        content: "";
-        position: absolute;
-        top: -15px; /* Adjust to connect to the parent generation */
-        left: 50%;
-        width: 2px;
-        height: 15px;
-        background: black;
-        transform: translateX(-50%);
+div.connector {
+    position: absolute;
+    background-color: #333;
+    z-index: -10;
+}
+
+    div.connector.h {
+        height: 2px;
+        background-color: #ddd;
     }
 
-.generation:first-child .familyTreePerson::before {
-    display: none; /* No lines for the first generation */
+    div.connector.v {
+        height: 1px;
+        background-color: #66d;
+        -webkit-transform-origin: 0 100%;
+        transform-origin: 0 100%;
+    }
+
+div[data-level='0'] {
+    background-color: #933;
 }
 
-.connection {
-    position: absolute;
-    height: 2px;
-    background: black;
-    z-index: 1;
+div[data-level='1'], div[data-level='-1'] {
+    background-color: #393;
+}
+
+div[data-level='2'], div[data-level='-2'] {
+    background-color: #333;
 }
