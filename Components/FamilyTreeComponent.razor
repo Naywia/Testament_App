@@ -1,0 +1,58 @@
+@rendermode InteractiveServer
+@if (Inheritance.GetTestators().Any())
+{
+    <h2>Famillie træ:</h2>
+    <h3>Arveladere:</h3>
+    @foreach (var (testator, i) in Inheritance.GetTestators().Select((testator, i) => (testator, i)))
+    {
+        <div class="d-flex">
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(TestatorEdit), i, Update)">Name: @testator.Name</p>
+            @foreach (var asset in testator.GetAssets())
+            {
+                <p class="border border-dark border-1 rounded-3" style="width: 100px;">Asset: @asset.Name </p>
+            }
+        </div>
+    }
+    <h3>Arvinger:</h3>
+    @foreach (var (heir, i) in Inheritance.GetHeirs().Select((heir, i) => (heir, i)))
+    {
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), i, Update)">Name: @heir.Name</p>
+    }
+}
+<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny testator</button>
+<button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit), Update)">Tilføj ny arving</button>
+<button class="btn btn-primary" @onclick="() => modal.Open(typeof(AssetEdit), Update)">Tilføj nyt aktiv</button>
+
+@* <AssetEdit @ref="assetModal" /> *@
+<Modal @ref="modal"/>
+
+@code {
+    private Modal modal = new();
+    //private AssetEdit assetModal = new();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // Opens pop-up for adding testator if none are present is checked each render-cycle
+        if (!Inheritance.GetTestators().Any()) modal.Open(typeof(TestatorEdit), Update);
+        base.OnAfterRender(firstRender);
+    }
+    
+    private async void Update()
+    {
+        try
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    //private void SubmitAsset(Asset asset)
+    //{
+    //    Inheritance.AddAsset(asset);
+    //    InvokeAsync(StateHasChanged);
+    //}
+}

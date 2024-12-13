@@ -1,0 +1,59 @@
+﻿#frontpage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 5em 10em;
+    color: #fff;
+}
+
+    #frontpage h1 {
+        font-size: 3rem; /* Large font for title */
+        margin-bottom: 20px;
+    }
+
+.description {
+    font-size: 1.25rem;
+    line-height: 1.6; /* Better readability */
+    margin-bottom: 30px;
+}
+
+#buttons {
+    display: flex;
+    width: 100%;
+    margin-top: 1em;
+    justify-content: center;
+    gap: 15px; /* Space between buttons */
+}
+
+    #buttons div, #buttons a {
+        margin: 0 1em
+    }
+
+.a-buttons, #input-div {
+    width: 50%;
+}
+
+.frontpage-buttons {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0074d9;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+    .frontpage-buttons:hover {
+        background-color: #0056a3;
+    }
+
+.a-buttons {
+    text-decoration: none;
+}
+
+#input-button {
+    width: 100%;
+}
