@@ -18,12 +18,7 @@ using Testament_App.Models;
 namespace Testament_App.Services
 {
     public class PDFService
-    { /// <summary>
-      /// Generates a comprehensive FamilyTree PDF report.
-      /// </summary>
-      /// <param name="familyTreeJson">JSON representation of the family tree.</param>
-      /// <returns>PDF file as a byte array.</returns>
-
+    { 
         private readonly PdfFont _headingFont;
         private readonly PdfFont _bodyFont;
 
@@ -68,7 +63,7 @@ namespace Testament_App.Services
                 using var document = new Document(pdf);
 
                 // Cover Page.
-                AddCoverPage(document);
+                AddTextToCoverPage(document);
 
                 // Family Tree Section.
                 AddFamilyTree(document);
@@ -80,7 +75,7 @@ namespace Testament_App.Services
             return stream.ToArray();
         }
 
-        private PdfDocument CreateCoverPage(PdfWriter writer)
+        private static PdfDocument CreateCoverPage(PdfWriter writer)
         {
             // Set the page size to standard A4
             PageSize pageSize = PageSize.A4;
@@ -137,7 +132,7 @@ namespace Testament_App.Services
             return pdf;
         }
 
-        private void AddCoverPage(Document document)
+        private void AddTextToCoverPage(Document document)
         {
             // Set the text color to white
             var whiteColor = ColorConstants.WHITE;
@@ -157,7 +152,7 @@ namespace Testament_App.Services
             document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE)); // Move to the next page
         }
 
-        private string GetFamilyTreeJSON()
+        private static string GetFamilyTreeJSON()
         {
             List<Testator> testators = [.. Inheritance.GetTestators()];
             List<Person> heirs = [.. Inheritance.GetHeirs()];
@@ -238,40 +233,7 @@ namespace Testament_App.Services
             }
         }
 
-        //private string GenerateHtmlFamilyTree()
-        //{
-        //    string familyTreeHtml = "";
-        //    string grandParentsHtml = @"<div id=""familyTreeGrandParentsContainer"">";
-        //    string parentsHtml = @"<div id=""familyTreeParentsContainer"">";
-        //    string testatorsHtml = @"<div id=""familyTreeTestatorsContainer"">";
-        //    string childrenHtml = @"<div id=""familyTreeChildrenContainer"">";
-        //    string grandChildrenHtml = @"<div id=""familyTreeGrandChildrenContainer"">";
-        //    foreach (Person testator in Inheritance.GetTestators())
-        //    {
-        //        if (testator.Children.Count > 0)
-        //        {
-        //            testatorsHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {testator.Name}</p>";
-        //            foreach (Person child in testator.GetChildren())
-        //            {
-        //                childrenHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {child.Name}</p>";
-        //            }
-        //        }
-        //    }
-
-        //    //foreach (var heir in Inheritance.GetHeirs())
-        //    //{
-        //    //    familyTreeHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {heir.Name}</p>";
-        //    //}
-
-        //    familyTreeHtml += grandParentsHtml + "</div>";
-        //    familyTreeHtml += parentsHtml + "</div>";
-        //    familyTreeHtml += testatorsHtml + "</div>";
-        //    familyTreeHtml += childrenHtml + "</div>";
-        //    familyTreeHtml += grandChildrenHtml + "</div>";
-        //    return familyTreeHtml;
-        //}
-
-        private string GenerateHtmlFamilyTree()
+        private static string GenerateHtmlFamilyTree()
         {
             // Recursive function to build HTML for a person and their descendants.
             string BuildDescendantHtml(Person person)
