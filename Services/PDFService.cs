@@ -45,6 +45,8 @@ namespace Testament_App.Services
             _bodyFont = PdfFontFactory.CreateFont(quicksandPath, PdfEncodings.IDENTITY_H, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
         }
 
+        #region Export
+
         public byte[] GeneratePdf(string password = "test")
         {
             var writerProperties = new WriterProperties()
@@ -343,46 +345,11 @@ namespace Testament_App.Services
             return familyTreeHtml;
         }
 
+        #endregion
 
         #region Import
 
-        public void ImportPdf(byte[] pdfBytes, string password)
-        {
-            if (pdfBytes == null || pdfBytes.Length == 0)
-            {
-                throw new ArgumentException("Invalid PDF data.");
-            }
-
-            try
-            {
-                var passwordBytes = Encoding.UTF8.GetBytes(password);
-                var readerProperties = new ReaderProperties().SetPassword(passwordBytes);
-
-                // Open the PDF
-                using var reader = new PdfReader(new MemoryStream(pdfBytes), readerProperties);
-                using var pdfReader = new PdfReader(new MemoryStream(pdfBytes));
-                using var pdfDocument = new PdfDocument(pdfReader);
-
-                // Extract metadata
-                var info = pdfDocument.GetDocumentInfo();
-                Console.WriteLine($"Title: {info.GetTitle()}");
-                Console.WriteLine($"Author: {info.GetAuthor()}");
-                Console.WriteLine($"Creation Date: {info.GetMoreInfo("CreationDate")}");
-
-                // Look for the embedded family tree JSON
-                string familyTreeJson = info.GetMoreInfo("FamilyTreeJSON");
-                if (string.IsNullOrEmpty(familyTreeJson))
-                {
-                    Console.WriteLine("No FamilyTreeJSON metadata found.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error importing PDF: {ex.Message}");
-            }
-        }
-
-        public async Task<(bool Success, string ErrorMessage)> ImportPdfAsync(byte[] pdfContent, string password)
+        public PdfImport ImportPdf(byte[] pdfContent, string password)
         {
             try
             {
@@ -394,26 +361,39 @@ namespace Testament_App.Services
 
                 // Open the PDF
                 using var reader = new PdfReader(new MemoryStream(pdfContent), readerProperties);
-                using var pdfDoc = new PdfDocument(reader);
+                using var pdfDocument = new PdfDocument(reader);
 
                 // Validate the PDF content
-                if (pdfDoc.GetNumberOfPages() > 0)
+                if (pdfDocument.GetNumberOfPages() > 0)
                 {
                     // You can handle the imported PDF here (e.g., save to a database, parse content, etc.)
-                    return (true, string.Empty);
+
+                    var info = pdfDocument.GetDocumentInfo();
+                    Console.WriteLine($"Title: {info.GetTitle()}");
+                    Console.WriteLine($"Author: {info.GetAuthor()}");
+                    Console.WriteLine($"Creation Date: {info.GetMoreInfo("CreationDate")}");
+
+                    // Look for the embedded family tree JSON
+                    string familyTreeJson = info.GetMoreInfo("FamilyTreeJSON");
+                    if (string.IsNullOrEmpty(familyTreeJson))
+                    {
+                        Console.WriteLine("No FamilyTreeJSON metadata found.");
+                    }
+
+                    return new(true, string.Empty);
                 }
                 else
                 {
-                    return (false, "PDF'en indeholder ingen sider.");
+                    return new(false, "PDF'en indeholder ingen sider.");
                 }
             }
             catch (BadPasswordException)
             {
-                return (false, "Forkert adgangskode. Prøv igen.");
+                return new(false, "Forkert adgangskode. Prøv igen.");
             }
             catch (Exception ex)
             {
-                return (false, $"Fejl ved behandling af PDF: {ex.Message}");
+                return new(false, $"Fejl ved behandling af PDF: {ex.Message}");
             }
         }
         #endregion
