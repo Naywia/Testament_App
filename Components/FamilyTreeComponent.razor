@@ -1,8 +1,8 @@
 @rendermode InteractiveServer
 @if (Inheritance.GetTestators().Any())
 {
-    <h2>FamilyTree:</h2>
-    <h3>Testators:</h3>
+    <h2>Famillie træ:</h2>
+    <h3>Arveladere:</h3>
     @foreach (var (testator, i) in Inheritance.GetTestators().Select((testator, i) => (testator, i)))
     {
         <div class="d-flex">
@@ -13,7 +13,7 @@
             }
         </div>
     }
-    <h3>Heirs:</h3>
+    <h3>Arvinger:</h3>
     @foreach (var (heir, i) in Inheritance.GetHeirs().Select((heir, i) => (heir, i)))
     {
         <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), i, Update)">Name: @heir.Name</p>
@@ -21,7 +21,7 @@
 }
 <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny testator</button>
 <button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit), Update)">Tilføj ny arving</button>
-<button class="btn btn-primary" @onclick="() => modal.Open(typeof(AssetEdit), Update)">Tilføj ny asset</button>
+<button class="btn btn-primary" @onclick="() => modal.Open(typeof(AssetEdit), Update)">Tilføj nyt aktiv</button>
 
 @* <AssetEdit @ref="assetModal" /> *@
 <Modal @ref="modal"/>
