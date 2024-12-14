@@ -24,12 +24,12 @@
             <option value="@testator.Name">@testator.Name</option>
         }
     </InputSelect>
-    <button @onclick="()=> selectedTestator.AddAsset(editAsset)">Tilføj asset</button>
+    <button @onclick="()=> selectedTestator.AddAsset(editAsset)">Tilføj aktiv</button>
 </label>
 
 @code {
     [Parameter]
-    public Int32? EditIndex { get; set; }
+    public Object? EditItem { get; set; }
     private Asset editAsset { get; set; }
     private IEnumerable<Person> _persons => FamilyTree.GetMembers();
     private IEnumerable<Testator> _testators => Inheritance.GetTestators();
@@ -38,9 +38,9 @@
 
     protected override void OnParametersSet()
     {
-        if (EditIndex != null)
+        if (EditItem != null)
         {
-            editAsset = Inheritance.GetAssets()[(Int32)EditIndex];
+            editAsset = (Asset)EditItem;
             Console.WriteLine($"EditTestator: {editAsset.Name}");
             InvokeAsync(StateHasChanged);
         }
@@ -48,7 +48,6 @@
         {
             editAsset = new();
         }
-        //Console.WriteLine("OnParametersSet");
         base.OnParametersSet();
     }
 
@@ -76,7 +75,7 @@
             throw;
         }
         editAsset = new();
-        EditIndex = null;
+        EditItem = null;
         selectedTestatorName = null;
     }
 }

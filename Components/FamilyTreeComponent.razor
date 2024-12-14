@@ -1,34 +1,32 @@
 @rendermode InteractiveServer
 @if (Inheritance.GetTestators().Any())
 {
-    <h2>Famillie træ:</h2>
+    <h2>Famillie træ</h2>
     <h3>Arveladere:</h3>
-    @foreach (var (testator, i) in Inheritance.GetTestators().Select((testator, i) => (testator, i)))
+    @foreach (var testator in Inheritance.GetTestators())
     {
         <div class="d-flex">
-            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(TestatorEdit), i, Update)">Name: @testator.Name</p>
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(TestatorEdit), testator, Update)">Navn: @testator.Name</p>
             @foreach (var asset in testator.GetAssets())
             {
-                <p class="border border-dark border-1 rounded-3" style="width: 100px;">Asset: @asset.Name </p>
+                <p class="border border-dark border-1 rounded-3" style="width: 100px;" @onclick="() => modal.Open(typeof(AssetEdit), asset, Update)">Aktiv: @asset.Name </p>
             }
         </div>
     }
     <h3>Arvinger:</h3>
-    @foreach (var (heir, i) in Inheritance.GetHeirs().Select((heir, i) => (heir, i)))
+    @foreach (var heir in Inheritance.GetHeirs())
     {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), i, Update)">Name: @heir.Name</p>
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), heir, Update)">Navn: @heir.Name</p>
     }
 }
-<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny testator</button>
+<h2>Handlinger</h2>
+<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny arvelader</button>
 <button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit), Update)">Tilføj ny arving</button>
 <button class="btn btn-primary" @onclick="() => modal.Open(typeof(AssetEdit), Update)">Tilføj nyt aktiv</button>
-
-@* <AssetEdit @ref="assetModal" /> *@
 <Modal @ref="modal"/>
 
 @code {
     private Modal modal = new();
-    //private AssetEdit assetModal = new();
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -49,10 +47,4 @@
             throw;
         }
     }
-
-    //private void SubmitAsset(Asset asset)
-    //{
-    //    Inheritance.AddAsset(asset);
-    //    InvokeAsync(StateHasChanged);
-    //}
 }
