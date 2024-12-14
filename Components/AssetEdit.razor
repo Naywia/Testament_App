@@ -24,7 +24,7 @@
             <option value="@testator.Name">@testator.Name</option>
         }
     </InputSelect>
-    <button @onclick="()=> selectedTestator.AddAsset(editAsset)">Tilføj aktiv</button>
+    <button @onclick="()=> selectedTestator.AddAsset(editAsset)">Tilknyt til arvelader</button>
 </label>
 
 @code {
@@ -59,6 +59,8 @@
 
     public void Delete()
     {
+        var testator = Inheritance.GetTestators().FirstOrDefault(t => t.GetAssets().Contains(editAsset));
+        if (testator != null) testator.DeleteAsset(editAsset);
         Inheritance.DeleteAsset(editAsset);
         Reset();
     }
