@@ -18,6 +18,11 @@
     {
         <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), heir, Update)">Navn: @heir.Name</p>
     }
+    <h3>Aktiver:</h3>
+    @foreach (var asset in Inheritance.GetAssets())
+    {
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(AssetEdit), asset, Update)">Navn: @asset.Name</p>
+    }
 }
 <h2>Handlinger</h2>
 <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny arvelader</button>

@@ -4,11 +4,6 @@ public class Testator : Person
 {
     private List<Asset> separateAssets = new();
 
-    public Testator()
-    {
-        
-    }
-
     public void AddAsset(Asset asset)
     {
         separateAssets.Add(asset);
@@ -17,5 +12,10 @@ public class Testator : Person
     public List<Asset> GetAssets()
     {
         return separateAssets;
+    }
+
+    public void DeleteAsset(Asset asset)
+    {
+        separateAssets.Remove(asset);
     }
 }
