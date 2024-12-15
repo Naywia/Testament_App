@@ -173,7 +173,6 @@ div.node {
 div.connector {
     position: absolute;
     background-color: #333;
-    z-index: -10;
 }
 
     div.connector.h {

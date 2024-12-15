@@ -53,14 +53,14 @@ function updateFamilyTree() {
     ];
 
     const elements = [],
-          levels = [],
-          levelMap = [],
-          tree = document.getElementById('familyTree'),
-          gap = 32,
-          size = 64;
+        levels = [],
+        levelMap = [],
+        tree = document.getElementById('familyTree'),
+        gap = 32,
+        size = 64;
 
-    let startTop = 0;
-    let startLeft = 0;
+    let startTop = 300; // Adjust as needed for vertical positioning
+    let startLeft = 500; // Adjust as needed for horizontal centering
 
     // Extract unique levels and sort them
     data.forEach(elem => {
@@ -144,34 +144,63 @@ function updateFamilyTree() {
     }
 
     function plotConnector(source, destination, relation) {
-        const connectorId = `${source.id}-${destination.id}`;
-        if (document.getElementById(connectorId)) return;
+        var connector = document.createElement('div'),
+            orientation, comboId, comboIdInverse, startNode, stopNode,
+            x1, y1, x2, y2, length, angle, transform;
 
-        const connector = document.createElement('div');
-        connector.id = connectorId;
-        connector.classList.add('asset', 'connector', relation === 'partners' ? 'h' : 'v');
+        // We do not plot a connector if already present
+        comboId = source.id + '-' + destination.id;
+        comboIdInverse = destination.id + '-' + source.id;
+        if (document.getElementById(comboId)) { return; }
+        if (document.getElementById(comboIdInverse)) { return; }
 
-        const [x1, y1, x2, y2] = [
-            parseInt(source.style.left),
-            parseInt(source.style.top),
-            parseInt(destination.style.left),
-            parseInt(destination.style.top)
-        ];
+        connector.id = comboId;
+        orientation = relation == 'partners' ? 'h' : 'v';
+        connector.classList.add('asset');
+        connector.classList.add('connector');
+        connector.classList.add(orientation);
 
-        if (relation === 'partners') {
-            connector.style.width = `${x2 - x1}px`;
-            connector.style.left = `${x1 + size}px`;
-            connector.style.top = `${y1 + size / 2}px`;
-        } else {
-            const length = Math.hypot(x2 - x1, y2 - y1);
-            const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+        startNode = document.getElementById(source.id); // Fetch the DOM element for the source
+        stopNode = document.getElementById(destination.id); // Fetch the DOM element for the destination
 
-            connector.style.width = `${length}px`;
-            connector.style.left = `${x1 + size / 2}px`;
-            connector.style.top = `${y1}px`;
-            connector.style.transform = `rotate(${angle}deg)`;
+        if (relation == 'partners') {
+            // Horizontal connector between partners
+            x1 = parseInt(startNode.style.left) + size;        // Right edge of the start node
+            y1 = parseInt(startNode.style.top) + (size / 2);   // Vertical middle of the start node
+            x2 = parseInt(stopNode.style.left);                 // Left edge of the stop node
+            y2 = parseInt(stopNode.style.top) + (size / 2);    // Vertical middle of the stop node
+
+            length = Math.abs(x2 - x1) + 'px';  // Absolute length
+            connector.style.width = length;
+            connector.style.left = Math.min(x1, x2) + 'px';  // Start from the leftmost point
+            connector.style.top = y1 + 'px';
+
+            // Avoid collisions by moving the connector down if needed
+            let exists;
+            while (exists = detectCollision(connector)) {
+                connector.style.top = (parseInt(exists.style.top) + 4) + 'px';
+            }
         }
 
+        if (relation == 'parents') {
+            // Vertical connector between parents (could be slanted)
+            x1 = parseInt(startNode.style.left) + (size / 2);   // Center of the start node
+            y1 = parseInt(startNode.style.top);                  // Top edge of the start node
+            x2 = parseInt(stopNode.style.left) + (size / 2);    // Center of the stop node
+            y2 = parseInt(stopNode.style.top) + (size - 2);     // Bottom edge of the stop node
+
+            // Calculate the diagonal length and angle
+            length = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+            angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;  // Calculate the angle
+            transform = 'rotate(' + angle + 'deg)';
+
+            connector.style.width = length + 'px';
+            connector.style.left = x1 + 'px';
+            connector.style.top = y1 + 'px';
+            connector.style.transform = transform;
+        }
+
+        // Append the connector to the tree
         tree.appendChild(connector);
     }
 
