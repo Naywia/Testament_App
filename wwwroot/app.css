@@ -2,11 +2,15 @@ html, body {
     height: 100vh;
     font-family: "Quicksand", "Montserrat", "Raleway", sans-serif;
     color: var(--white);
-
     --white: #ffffff;
     --button-blue: #0074d9;
     --button-blue-hover: #0056a3;
     --secondary-bg: #333333;
+    --family-tree-node-0: #993333;
+    --family-tree-node-1: #FFC15E;
+    --family-tree-node-2: #37718E;
+    --family-tree-node-3: #748E54;
+    --family-tree-node-4: #392F5A;
 }
 
 body {
@@ -185,13 +189,13 @@ div.connector {
     }
 
 div[data-level='0'] {
-    background-color: #933;
+    background-color: var(--family-tree-node-0);
 }
 
 div[data-level='1'], div[data-level='-1'] {
-    background-color: #393;
+    background-color: var(--family-tree-node-1);
 }
 
 div[data-level='2'], div[data-level='-2'] {
-    background-color: #333;
+    background-color: var(--family-tree-node-2);
 }
