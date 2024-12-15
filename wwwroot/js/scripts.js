@@ -32,25 +32,26 @@ function addFamilyTree(id, html) {
     document.getElementById(id).innerHTML = html;
 }
 
-function updateFamilyTree() {
-    const data = [
-        { "id": 1, "name": "Me", "children": [4], "partners": [2, 3], root: true, level: 0, "parents": [8, 9] },
-        { "id": 2, "name": "Mistress", "children": [4], "partners": [1], level: 0, "parents": [] },
-        { "id": 3, "name": "Wife", "children": [5], "partners": [1], level: 0, "parents": [] },
-        { "id": 4, "name": "Son", "children": [], "partners": [], level: -1, "parents": [1, 2] },
-        { "id": 5, "name": "Daughter", "children": [7], "partners": [6], level: -1, "parents": [1, 3] },
-        { "id": 6, "name": "Boyfriend", "children": [7], "partners": [5], level: -1, "parents": [] },
-        { "id": 7, "name": "Son Last", "children": [], "partners": [], level: -2, "parents": [5, 6] },
-        { "id": 8, "name": "Jeff", "children": [1], "partners": [9], level: 1, "parents": [10, 11] },
-        { "id": 9, "name": "Maggie", "children": [1], "partners": [8], level: 1, "parents": [13, 14] },
-        { "id": 10, "name": "Bob", "children": [8], "partners": [11], level: 2, "parents": [12] },
-        { "id": 11, "name": "Mary", "children": [], "partners": [10], level: 2, "parents": [] },
-        { "id": 12, "name": "John", "children": [10], "partners": [], level: 3, "parents": [] },
-        { "id": 13, "name": "Robert", "children": [9], "partners": [14], level: 2, "parents": [] },
-        { "id": 14, "name": "Jessie", "children": [9], "partners": [13], level: 2, "parents": [15, 16] },
-        { "id": 15, "name": "Raymond", "children": [14], "partners": [16], level: 3, "parents": [] },
-        { "id": 16, "name": "Betty", "children": [14], "partners": [15], level: 3, "parents": [] },
-    ];
+function updateFamilyTree(data) {
+    console.log(data);
+    //data = [
+    //    { "id": 1, "name": "Me", "children": [4], "partners": [2, 3], root: true, level: 0, "parents": [8, 9] },
+    //    { "id": 2, "name": "Mistress", "children": [4], "partners": [1], level: 0, "parents": [] },
+    //    { "id": 3, "name": "Wife", "children": [5], "partners": [1], level: 0, "parents": [] },
+    //    { "id": 4, "name": "Son", "children": [], "partners": [], level: -1, "parents": [1, 2] },
+    //    { "id": 5, "name": "Daughter", "children": [7], "partners": [6], level: -1, "parents": [1, 3] },
+    //    { "id": 6, "name": "Boyfriend", "children": [7], "partners": [5], level: -1, "parents": [] },
+    //    { "id": 7, "name": "Son Last", "children": [], "partners": [], level: -2, "parents": [5, 6] },
+    //    { "id": 8, "name": "Jeff", "children": [1], "partners": [9], level: 1, "parents": [10, 11] },
+    //    { "id": 9, "name": "Maggie", "children": [1], "partners": [8], level: 1, "parents": [13, 14] },
+    //    { "id": 10, "name": "Bob", "children": [8], "partners": [11], level: 2, "parents": [12] },
+    //    { "id": 11, "name": "Mary", "children": [], "partners": [10], level: 2, "parents": [] },
+    //    { "id": 12, "name": "John", "children": [10], "partners": [], level: 3, "parents": [] },
+    //    { "id": 13, "name": "Robert", "children": [9], "partners": [14], level: 2, "parents": [] },
+    //    { "id": 14, "name": "Jessie", "children": [9], "partners": [13], level: 2, "parents": [15, 16] },
+    //    { "id": 15, "name": "Raymond", "children": [14], "partners": [16], level: 3, "parents": [] },
+    //    { "id": 16, "name": "Betty", "children": [14], "partners": [15], level: 3, "parents": [] },
+    //];
 
     const elements = [],
         levels = [],
@@ -84,6 +85,7 @@ function updateFamilyTree() {
 
     /* Functions */
     function plotParents(person) {
+        alert("person " + person.name);
         if (!person || !person.parents) return;
 
         person.parents.reduce((previousId, currentId) => {
@@ -97,6 +99,7 @@ function updateFamilyTree() {
             }
 
             plotConnector(person, currentParent, 'parents');
+            alert("parent id" + currentParent.Id);
             plotParents(currentParent);
 
             return currentId;

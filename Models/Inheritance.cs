@@ -47,6 +47,11 @@ public static class Inheritance
         FamilyTree.RemoveMember(heir);
     }
 
+    public static List<Marriage> GetMarriage()
+    {
+        return FamilyTree.GetMarriages();
+    }
+
     private static int GetNextId()
     {
         // Get all used IDs from both lists
