@@ -3,7 +3,14 @@
     <div class="modal-dialog modal-dialog-centered" role="document" > 
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Tilføj thing</h5>
+                @if (_parameters["EditItem"] == null)
+                {
+                    <h5 class="modal-title">Tilføj</h5>
+                }
+                else
+                {
+                    <h5 class="modal-title">Rediger</h5>
+                }
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -15,9 +22,9 @@
                 }
             </div>
             <div class="modal-footer">
-                @if (_parameters["EditIndex"] != null)
+                @if (_parameters["EditItem"] != null)
                 {
-                     <button type="button" class="btn btn-warning" @onclick="Delete">Delete</button> 
+                     <button type="button" class="btn btn-warning" @onclick="Delete">Slet</button> 
                 }
                 else
                 {
@@ -52,7 +59,7 @@
     private DynamicComponent? _dynamicComponent = new();
     private Dictionary<String, Object> _parameters = new()
     {
-        ["EditIndex"] = null,
+        ["EditItem"] = null,
     };
     
     public async void Open(Type componentType, Action update)
@@ -63,7 +70,7 @@
         CommandUpdate = update;
         //selectedType = components[componentType];
         selectedType = componentType;
-        _parameters["EditIndex"] = null;
+        _parameters["EditItem"] = null;
         try
         {
             await InvokeAsync(StateHasChanged);
@@ -75,30 +82,14 @@
         }
     }
     
-    // get instance of the item to edit and parse it or use id thing
-    public async void Open(Type componentType, Int32 index, Action update)
+    public async void Open(Type componentType, Object editItem, Action update)
     {
         ModalDisplay = "block;";
         ModalClass = "show";
         //ShowBackdrop = true;
         CommandUpdate = update;
-        //selectedType = components[componentType];
         selectedType = componentType;
-        _parameters["EditIndex"] = index;
-        //if (selectedType == typeof(PersonEdit))
-        //{
-        //    Console.WriteLine($"Submitting Heir");
-        //    (_dynamicComponent.Instance as PersonEdit)?.Submit();
-        //}
-        //else if (selectedType == typeof(TestatorEdit))
-        //{
-        //    Console.WriteLine($"Submitting Testator");
-        //    (_dynamicComponent.Instance as TestatorEdit)?.Submit();
-        //}
-        //else
-        //{
-        //    Console.WriteLine($"Unsupported type found during submission");
-        //}
+        _parameters["EditItem"] = editItem;
         try
         {
             await InvokeAsync(StateHasChanged);
@@ -115,7 +106,7 @@
         ModalDisplay = "none;";
         ModalClass = "visually-hidden";
         //ShowBackdrop = false;
-        _parameters["EditIndex"] = null;
+        _parameters["EditItem"] = null;
         CommandUpdate();
     }
 
@@ -140,17 +131,17 @@
         
         if (selectedType == typeof(PersonEdit))
         {
-            Console.WriteLine($"Submitting Heir");
+            //Console.WriteLine($"Submitting Heir");
             (_dynamicComponent.Instance as PersonEdit)?.Submit();
         }
         else if (selectedType == typeof(TestatorEdit))
         {
-            Console.WriteLine($"Submitting Testator");
+            //Console.WriteLine($"Submitting Testator");
             (_dynamicComponent.Instance as TestatorEdit)?.Submit();
         }
         else if (selectedType == typeof(AssetEdit))
         {
-            Console.WriteLine($"Submitting Asset");
+            //Console.WriteLine($"Submitting Asset");
             (_dynamicComponent.Instance as AssetEdit)?.Submit();
         }
         else
@@ -165,17 +156,17 @@
         Console.WriteLine($"Selected Type: {selectedType}");
         if (selectedType == typeof(PersonEdit))
         {
-            Console.WriteLine($"Submitting Heir");
+            //Console.WriteLine($"Deleting Heir");
             (_dynamicComponent.Instance as PersonEdit)?.Delete();
         }
         else if (selectedType == typeof(TestatorEdit))
         {
-            Console.WriteLine($"Submitting Testator");
+            //Console.WriteLine($"Deleting Testator");
             (_dynamicComponent.Instance as TestatorEdit)?.Delete();
         }
         else if (selectedType == typeof(AssetEdit))
         {
-            Console.WriteLine($"Submitting Asset");
+            //Console.WriteLine($"Deleting Asset");
             (_dynamicComponent.Instance as AssetEdit)?.Delete();
         }
         else

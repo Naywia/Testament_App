@@ -15,21 +15,26 @@
     {
         <h2>Stamtræ:</h2>
         <h3>Arveladere:</h3>
-        @foreach (var (testator, i) in Inheritance.GetTestators().Select((testator, i) => (testator, i)))
-        {
-            <div class="d-flex">
-                <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(TestatorEdit), i, Update)">Name: @testator.Name</p>
-                @foreach (var asset in testator.GetAssets())
-                {
-                    <p class="border border-dark border-1 rounded-3" style="width: 100px;">Asset: @asset.Name </p>
-                }
-            </div>
-        }
-        <h3>Arvinger:</h3>
-        @foreach (var (heir, i) in Inheritance.GetHeirs().Select((heir, i) => (heir, i)))
-        {
-            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), i, Update)">Name: @heir.Name</p>
-        }
+    @foreach (var testator in Inheritance.GetTestators())
+    {
+        <div class="d-flex">
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(TestatorEdit), testator, Update)">Navn: @testator.Name</p>
+            @foreach (var asset in testator.GetAssets())
+            {
+                <p class="border border-dark border-1 rounded-3" style="width: 100px;" @onclick="() => modal.Open(typeof(AssetEdit), asset, Update)">Aktiv: @asset.Name </p>
+            }
+        </div>
+    }
+    <h3>Arvinger:</h3>
+    @foreach (var heir in Inheritance.GetHeirs())
+    {
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), heir, Update)">Navn: @heir.Name</p>
+    }
+    <h3>Aktiver:</h3>
+    @foreach (var asset in Inheritance.GetAssets())
+    {
+        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(AssetEdit), asset, Update)">Navn: @asset.Name</p>
+    }
     }
     @* <AssetEdit @ref="assetModal" /> *@
     <Modal @ref="modal" />
@@ -38,7 +43,6 @@
 @code {
     private ElementReference familyTree;
     private Modal modal = new();
-    //private AssetEdit assetModal = new();
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -107,10 +111,4 @@
             throw;
         }
     }
-
-    //private void SubmitAsset(Asset asset)
-    //{
-    //    Inheritance.AddAsset(asset);
-    //    InvokeAsync(StateHasChanged);
-    //}
 }
