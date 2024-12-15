@@ -62,41 +62,6 @@
         {
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
-
-        // string grandParentsHtml = "";
-        // string parentsHtml = "";
-        // string testatorsHtml = "";
-        // string childrenHtml = "";
-        // string grandChildrenHtml = "";
-        // foreach (Person testator in Inheritance.GetTestators())
-        // {
-        //     if (testator.Children.Count > 0)
-        //     {
-        //         testatorsHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {testator.Name}</p>";
-        //         foreach (Person child in testator.GetChildren())
-        //         {
-        //             childrenHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {child.Name}</p>";
-        //             foreach (Person grandChild in child.GetChildren())
-        //             {
-        //                 grandChildrenHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {grandChild.Name}</p>";
-        //             }
-        //         }
-        //         foreach (Person parent in testator.GetAncestors())
-        //         {
-        //             parentsHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {parent.Name}</p>";
-        //             foreach (Person grandParent in parent.GetAncestors())
-        //             {
-        //                 grandParentsHtml += $@"<p class=""familyTreePerson border border-dark border-1 rounded-3"">Name: {grandParent.Name}</p>";
-        //             }
-        //         }
-        //     }
-        // }
-
-        // await JSRuntime.InvokeVoidAsync("addFamilyTree", "familyTreeGrandParentsContainer", grandParentsHtml);
-        // await JSRuntime.InvokeVoidAsync("addFamilyTree", "familyTreeParentsContainer", parentsHtml);
-        // await JSRuntime.InvokeVoidAsync("addFamilyTree", "familyTreeTestatorsContainer", testatorsHtml);
-        // await JSRuntime.InvokeVoidAsync("addFamilyTree", "familyTreeChildrenContainer", childrenHtml);
-        // await JSRuntime.InvokeVoidAsync("addFamilyTree", "familyTreeGrandChildrenContainer", grandChildrenHtml);
     }
 
     private async void Update()
