@@ -85,7 +85,7 @@ function updateFamilyTree(data) {
 
     /* Functions */
     function plotParents(person) {
-        alert("person " + person.name);
+        console.log("person name: " + person.name);
         if (!person || !person.parents) return;
 
         person.parents.reduce((previousId, currentId) => {
@@ -99,7 +99,7 @@ function updateFamilyTree(data) {
             }
 
             plotConnector(person, currentParent, 'parents');
-            alert("parent id" + currentParent.Id);
+            console.log("parent id: " + currentParent.Id);
             plotParents(currentParent);
 
             return currentId;
