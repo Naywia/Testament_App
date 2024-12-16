@@ -68,6 +68,15 @@ h1, h2, h3, h4 {
         background-color: var(--button-blue-hover);
     }
 
+.button-xtra {
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
 h1:focus {
     outline: none;
 }

@@ -1,32 +1,33 @@
 ﻿@rendermode InteractiveServer
-<label>
-    Navn:
-    <InputText @bind-value="editAsset.Name"></InputText>
-</label>
-<label>
-    Værdi:
-    <InputNumber @bind-Value="editAsset.Value"></InputNumber>
-</label>
-<label>
-    Beskrivelse:
-    <InputText @bind-Value="editAsset.Description"></InputText>
-</label>
+<div style="display: flex;flex-direction: column;gap: 5px;">
+    <label>
+        Navn:
+        <InputText @bind-value="editAsset.Name"></InputText>
+    </label>
+    <label>
+        Værdi:
+        <InputNumber @bind-Value="editAsset.Value"></InputNumber>
+    </label>
+    <label>
+        Beskrivelse:
+        <InputText @bind-Value="editAsset.Description"></InputText>
+    </label>
 
-<label>
-    Relation:
-    <InputSelect @bind-Value="selectedTestatorName">
-        @if (selectedTestatorName == null)
-        {
-            <option value="">none</option>
-        }
-        @foreach (var testator in _testators)
-        {
-            <option value="@testator.Name">@testator.Name</option>
-        }
-    </InputSelect>
-    <button @onclick="()=> selectedTestator.AddAsset(editAsset)">Tilknyt til arvelader</button>
-</label>
-
+    <label>
+        Relation:
+        <InputSelect @bind-Value="selectedTestatorName">
+            @if (selectedTestatorName == null)
+            {
+                <option value="">none</option>
+            }
+            @foreach (var testator in _testators)
+            {
+                <option value="@testator.Name">@testator.Name</option>
+            }
+        </InputSelect>
+        <button class="btn-success button-xtra" @onclick="()=> selectedTestator.AddAsset(editAsset)">Tilknyt til arvelader</button>
+    </label>
+</div>
 @code {
     [Parameter]
     public Object? EditItem { get; set; }
@@ -64,7 +65,7 @@
         Inheritance.DeleteAsset(editAsset);
         Reset();
     }
-    
+
     private void Reset()
     {
         try
