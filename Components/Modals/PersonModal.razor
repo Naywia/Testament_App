@@ -18,7 +18,7 @@
                     <InputDate TValue="DateOnly" @bind-Value="editPerson.Birthday"></InputDate>
                 </label>
                 <label>
-                    ErDød?:
+                    Er personen død? :
                     <InputCheckbox @bind-Value="editPerson.IsAlive"></InputCheckbox>
                 </label>
                 <label>
@@ -61,10 +61,10 @@
             <div class="modal-footer">
                 @if (CommandDelete != null)
                 {
-                     <button type="button" class="btn btn-warning" @onclick="() => { CommandDelete(editPerson); Close(); }">Fjern arving</button> 
+                     <button class="btn btn-warning" @onclick="() => { CommandDelete(editPerson); Close(); }">Fjern arving</button> 
                 }
-                <button type="button" class="btn btn-primary" @onclick="() => { Command(editPerson); Close(); }">AddItem</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
+                <button class="button" @onclick="() => { Command(editPerson); Close(); }">Tilføj arving</button>
+                <button class="button-cancel" data-dismiss="modal" @onclick="Close">Annuller</button>
             </div>
         </div>
     </div>

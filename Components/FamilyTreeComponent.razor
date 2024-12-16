@@ -1,42 +1,188 @@
+@using Testament_App.Models
 @rendermode InteractiveServer
-@if (Inheritance.GetTestators().Any())
-{
-    <h2>Famillie træ:</h2>
-    <h3>Arveladere:</h3>
-    @foreach (var (testator, i) in Inheritance.GetTestators().Select((testator, i) => (testator, i)))
-    {
-        <div class="d-flex">
-            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(TestatorEdit), i, Update)">Name: @testator.Name</p>
-            @foreach (var asset in testator.GetAssets())
-            {
-                <p class="border border-dark border-1 rounded-3" style="width: 100px;">Asset: @asset.Name </p>
-            }
-        </div>
-    }
-    <h3>Arvinger:</h3>
-    @foreach (var (heir, i) in Inheritance.GetHeirs().Select((heir, i) => (heir, i)))
-    {
-        <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), i, Update)">Name: @heir.Name</p>
-    }
-}
-<button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny testator</button>
-<button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit), Update)">Tilføj ny arving</button>
-<button class="btn btn-primary" @onclick="() => modal.Open(typeof(AssetEdit), Update)">Tilføj nyt aktiv</button>
+@inject IJSRuntime JSRuntime
 
-@* <AssetEdit @ref="assetModal" /> *@
-<Modal @ref="modal"/>
+<div class="container p-3 border border-dark border-1 rounded-3">
+    <button class="btn btn-primary" @onclick="() => { if (Inheritance.GetTestators().Length < 2) modal.Open(typeof(TestatorEdit), Update); }">Tilføj ny arvelader</button>
+    <button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit), Update)">Tilføj ny arving</button>
+    <button class="btn btn-primary" @onclick="() => modal.Open(typeof(AssetEdit), Update)">Tilføj nyt aktiv</button>
+
+    @if (Inheritance.GetTestators().Any())
+    {
+        <h3>Arveladere:</h3>
+        @foreach (var testator in Inheritance.GetTestators())
+        {
+            <div class="d-flex">
+                <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(TestatorEdit), testator, Update)">Navn: @testator.Name</p>
+                @foreach (var asset in testator.GetAssets())
+                {
+                    <p class="border border-dark border-1 rounded-3" style="width: 100px;" @onclick="() => modal.Open(typeof(AssetEdit), asset, Update)">Aktiv: @asset.Name </p>
+                }
+            </div>
+        }
+        <h3>Arvinger:</h3>
+        @foreach (var heir in Inheritance.GetHeirs())
+        {
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(PersonEdit), heir, Update)">Navn: @heir.Name</p>
+        }
+        <h3>Aktiver:</h3>
+        @foreach (var asset in Inheritance.GetAssets())
+        {
+            <p class="border border-dark border-1 rounded-3" style="width: 280px;" @onclick="() => modal.Open(typeof(AssetEdit), asset, Update)">Navn: @asset.Name</p>
+        }
+    }
+    @* <AssetEdit @ref="assetModal" /> *@
+    <Modal @ref="modal" />
+</div>
 
 @code {
+    private ElementReference familyTree;
     private Modal modal = new();
-    //private AssetEdit assetModal = new();
 
     protected override void OnAfterRender(bool firstRender)
     {
         // Opens pop-up for adding testator if none are present is checked each render-cycle
         if (!Inheritance.GetTestators().Any()) modal.Open(typeof(TestatorEdit), Update);
         base.OnAfterRender(firstRender);
+
+        // GenerateHtmlFamilyTree();
     }
-    
+
+    private async Task GenerateHtmlFamilyTree()
+    {
+        List<PersonNode> familyTreeData = GetFamilyTreeData();
+
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("updateFamilyTree", familyTreeData);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+
+    public List<PersonNode> GetFamilyTreeData()
+    {
+        // List to hold all the nodes
+        List<PersonNode> nodes = new List<PersonNode>();
+
+        // Assuming GetTestators() returns a collection of Testator objects
+        foreach (var testator in Inheritance.GetTestators())
+        {
+            // Create PersonNode for Testator (level 0)
+            PersonNode testatorNode = new()
+                {
+                    Id = testator.Id,
+                    Name = testator.Name,
+                    Level = 0, // Testator level is 0
+                    Children = GetChildrenIds(testator), // Retrieve the children IDs
+                    Partners = GetPartnersIds(testator), // Retrieve partners' IDs (if applicable)
+                    Root = true, // Assuming the testator is the root
+                    Parents = GetParentsIds(testator) // You can modify to include parent's IDs if available
+                };
+
+            // Add the testator node to the list
+            nodes.Add(testatorNode);
+
+            // Create nodes for parents (level 1) and append them to the list
+            foreach (var parent in testator.Parents)
+            {
+                var parentNode = new PersonNode
+                    {
+                        Id = parent.Id,
+                        Name = parent.Name,
+                        Level = 1, // Parent level is 1
+                        Children = GetChildrenIds(parent),
+                        Partners = GetPartnersIds(parent),
+                        Root = false,
+                        Parents = new List<int> { testator.Id } // Parent's parent is the testator
+                    };
+
+                nodes.Add(parentNode);
+            }
+
+            // Create nodes for children (level -1) and append them to the list
+            foreach (var child in testator.Children)
+            {
+                var childNode = new PersonNode
+                    {
+                        Id = child.Id,
+                        Name = child.Name,
+                        Level = -1, // Child level is -1
+                        Children = GetChildrenIds(child),
+                        Partners = GetPartnersIds(child),
+                        Root = false,
+                        Parents = new List<int> { testator.Id } // Parent is the testator
+                    };
+
+                nodes.Add(childNode);
+
+                // Create nodes for grandchildren (level -2) and append them to the list
+                foreach (var grandchild in child.Children)
+                {
+                    var grandchildNode = new PersonNode
+                        {
+                            Id = grandchild.Id,
+                            Name = grandchild.Name,
+                            Level = -2, // Grandchild level is -2
+                            Children = GetChildrenIds(grandchild),
+                            Partners = GetPartnersIds(grandchild),
+                            Root = false,
+                            Parents = new List<int> { child.Id } // Parent is the child
+                        };
+
+                    nodes.Add(grandchildNode);
+                }
+            }
+        }
+
+        // Return the constructed array of PersonNode
+        return nodes;
+    }
+
+    // Helper methods to get relationships for children, partners, and parents
+    private List<int> GetChildrenIds(Person person)
+    {
+        // Example logic: Assuming person.Children exists and gives a list of children
+        return person.Children.Select(c => c.Id).ToList() ?? new List<int>();
+    }
+
+    private List<int> GetPartnersIds(Person person)
+    {
+        // Get the list of marriages related to this person
+        var marriages = Inheritance.GetMarriage();
+
+        // If there is at least one marriage, we check the first one
+        if (marriages != null && marriages.Count > 0)
+        {
+            // Iterate over the marriages and find the partner
+            foreach (var marriage in marriages)
+            {
+                // Check if the person is either Partner1 or Partner2 in the marriage
+                if (marriage.Partner1.Id == person.Id)
+                {
+                    // Return the ID of the other partner (Partner2)
+                    return new List<int> { marriage.Partner2.Id };
+                }
+                else if (marriage.Partner2.Id == person.Id)
+                {
+                    // Return the ID of the other partner (Partner1)
+                    return new List<int> { marriage.Partner1.Id };
+                }
+            }
+        }
+
+        // If no marriage found, return an empty array
+        return new List<int>();
+    }
+
+    private List<int> GetParentsIds(Person person)
+    {
+        // Return an empty list if person.Parents is null
+        return person.Parents?.Select(p => p.Id).ToList() ?? new List<int>();
+    }
+
     private async void Update()
     {
         try
@@ -49,10 +195,4 @@
             throw;
         }
     }
-
-    //private void SubmitAsset(Asset asset)
-    //{
-    //    Inheritance.AddAsset(asset);
-    //    InvokeAsync(StateHasChanged);
-    //}
 }

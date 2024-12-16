@@ -1,5 +1,5 @@
 @rendermode InteractiveServer
-<div>
+<div style="display: flex;flex-direction: column;gap: 5px;">
     <label>
         Navn:
         <InputText @bind-value="editPerson.Name"></InputText>
@@ -9,7 +9,7 @@
         <InputDate TValue="DateOnly" @bind-Value="editPerson.Birthday"></InputDate>
     </label>
     <label>
-        ErDød?:
+        Er personen død? :
         <InputCheckbox @bind-Value="editPerson.IsAlive"></InputCheckbox>
     </label>
     <label>
@@ -28,7 +28,7 @@
                 <option value="@person.Name">@person.Name</option>
             }
         </InputSelect>
-        <button @onclick="() => editPerson.AddChild(selectedChild)">Tilføj barn</button>
+        <button class="btn-success button-xtra" @onclick="() => editPerson.AddChild(selectedChild)">Tilføj barn</button>
     </label>
     <label>
         forældre:
@@ -46,14 +46,13 @@
                 <option value="@person.Name">@person.Name</option>
             }
         </InputSelect>
-        <button @onclick="() => editPerson.AddParent(selectedParent)">Tilføj forælder</button>
+        <button class="btn-success button-xtra" @onclick="() => editPerson.AddParent(selectedParent)">Tilføj forælder</button>
     </label>
 </div>
 
 @code {
-
     [Parameter]
-    public Int32? EditIndex { get; set; }
+    public Object? EditItem { get; set; }
     private Person editPerson { get; set; }
     private IEnumerable<Person> _persons => FamilyTree.GetMembers();
     private String? selectedParentName { get; set; } = null;
@@ -63,9 +62,9 @@
     
     protected override void OnParametersSet()
     {
-        if (EditIndex != null)
+        if (EditItem != null)
         {
-            editPerson = Inheritance.GetHeirs()[(Int32)EditIndex];
+            editPerson = (Person)EditItem;
             Console.WriteLine($"EditTestator: {editPerson.Name}");
             InvokeAsync(StateHasChanged);
         }
@@ -73,7 +72,6 @@
         {
             editPerson = new();
         }
-        //Console.WriteLine("OnParametersSet");
         base.OnParametersSet();
     }
 
@@ -101,7 +99,7 @@
             throw;
         }
         editPerson = new();
-        EditIndex = null;
+        EditItem = null;
         selectedParentName = null;
         selectedChildName = null;
     }

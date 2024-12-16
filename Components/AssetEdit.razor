@@ -1,35 +1,36 @@
 ﻿@rendermode InteractiveServer
-<label>
-    Navn:
-    <InputText @bind-value="editAsset.Name"></InputText>
-</label>
-<label>
-    Værdi:
-    <InputNumber @bind-Value="editAsset.Value"></InputNumber>
-</label>
-<label>
-    Beskrivelse:
-    <InputText @bind-Value="editAsset.Description"></InputText>
-</label>
+<div style="display: flex;flex-direction: column;gap: 5px;">
+    <label>
+        Navn:
+        <InputText @bind-value="editAsset.Name"></InputText>
+    </label>
+    <label>
+        Værdi:
+        <InputNumber @bind-Value="editAsset.Value"></InputNumber>
+    </label>
+    <label>
+        Beskrivelse:
+        <InputText @bind-Value="editAsset.Description"></InputText>
+    </label>
 
-<label>
-    Relation:
-    <InputSelect @bind-Value="selectedTestatorName">
-        @if (selectedTestatorName == null)
-        {
-            <option value="">none</option>
-        }
-        @foreach (var testator in _testators)
-        {
-            <option value="@testator.Name">@testator.Name</option>
-        }
-    </InputSelect>
-    <button @onclick="()=> selectedTestator.AddAsset(editAsset)">Tilføj asset</button>
-</label>
-
+    <label>
+        Relation:
+        <InputSelect @bind-Value="selectedTestatorName">
+            @if (selectedTestatorName == null)
+            {
+                <option value="">none</option>
+            }
+            @foreach (var testator in _testators)
+            {
+                <option value="@testator.Name">@testator.Name</option>
+            }
+        </InputSelect>
+        <button class="btn-success button-xtra" @onclick="()=> selectedTestator.AddAsset(editAsset)">Tilknyt til arvelader</button>
+    </label>
+</div>
 @code {
     [Parameter]
-    public Int32? EditIndex { get; set; }
+    public Object? EditItem { get; set; }
     private Asset editAsset { get; set; }
     private IEnumerable<Person> _persons => FamilyTree.GetMembers();
     private IEnumerable<Testator> _testators => Inheritance.GetTestators();
@@ -38,9 +39,9 @@
 
     protected override void OnParametersSet()
     {
-        if (EditIndex != null)
+        if (EditItem != null)
         {
-            editAsset = Inheritance.GetAssets()[(Int32)EditIndex];
+            editAsset = (Asset)EditItem;
             Console.WriteLine($"EditTestator: {editAsset.Name}");
             InvokeAsync(StateHasChanged);
         }
@@ -48,7 +49,6 @@
         {
             editAsset = new();
         }
-        //Console.WriteLine("OnParametersSet");
         base.OnParametersSet();
     }
 
@@ -60,10 +60,12 @@
 
     public void Delete()
     {
+        var testator = Inheritance.GetTestators().FirstOrDefault(t => t.GetAssets().Contains(editAsset));
+        if (testator != null) testator.DeleteAsset(editAsset);
         Inheritance.DeleteAsset(editAsset);
         Reset();
     }
-    
+
     private void Reset()
     {
         try
@@ -76,7 +78,7 @@
             throw;
         }
         editAsset = new();
-        EditIndex = null;
+        EditItem = null;
         selectedTestatorName = null;
     }
 }
