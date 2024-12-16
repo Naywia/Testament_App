@@ -61,7 +61,7 @@ function updateFamilyTree(data) {
         size = 64;
 
     let startTop = 300; // Adjust as needed for vertical positioning
-    let startLeft = 500; // Adjust as needed for horizontal centering
+    let startLeft = window.innerWidth / 2 - 500; // Adjust as needed for horizontal centering
 
     // Extract unique levels and sort them
     data.forEach(elem => {
@@ -107,6 +107,7 @@ function updateFamilyTree(data) {
     }
 
     function plotNode(person, type, relative = null, parentCount = 0) {
+        console.log("elements length: " + elements.length);
         if (document.getElementById(person.id)) return;
 
         const node = document.createElement('div');
@@ -136,13 +137,14 @@ function updateFamilyTree(data) {
                 node.style.top = `${parseInt(relativeNode.style.top) - gap - size}px`;
                 break;
         }
-
         while (detectCollision(node)) {
             node.style.left = `${parseInt(node.style.left) + size + gap * 2}px`;
         }
 
+        console.log(type + " " + node.id + " " + parseInt(node.style.left) + " " + parseInt(node.style.top))
         levelData.top = Math.min(levelData.top, parseInt(node.style.top));
         elements.push({ id: node.id, left: parseInt(node.style.left), top: parseInt(node.style.top) });
+        console.log(elements.length);
         tree.appendChild(node);
     }
 
