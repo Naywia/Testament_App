@@ -1,4 +1,5 @@
 ﻿@page "/overview"
+@rendermode InteractiveServer
 
 <PageTitle>Overview</PageTitle>
 
@@ -9,6 +10,7 @@
 <div id="overview-content">
     @* Pie-Chart *@
     <div id="pie" class="container p-3 border border-dark border-1 rounded-3">
+    <PieChartComponent/>
     </div>
 
     <FamilyTreeComponent />

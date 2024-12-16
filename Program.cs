@@ -1,3 +1,4 @@
+using MudBlazor.Services;
 using Testament_App.Components;
 using Testament_App.Services;
 
@@ -14,6 +15,7 @@ namespace Testament_App
                 .AddInteractiveServerComponents();
 
             builder.Services.AddSingleton<PDFService>();
+            builder.Services.AddMudServices();
 
             var app = builder.Build();
 
