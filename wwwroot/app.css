@@ -1,6 +1,17 @@
 html, body {
     height: 100vh;
-    font-family: "Quicksand", "Montserrat", "Raleway", sans-serif
+    font-family: "Quicksand", "Montserrat", "Raleway", sans-serif !important;
+    color: var(--white) !important;
+    --white: #ffffff;
+    --button-blue: #0074d9;
+    --button-blue-hover: #0056a3;
+    --secondary-bg: #333333;
+    --darker-bg: #1f1f1f;
+    --family-tree-node-0: #993333;
+    --family-tree-node-1: #E29E31;
+    --family-tree-node-2: #37718E;
+    --family-tree-node-3: #748E54;
+    --family-tree-node-4: #392F5A;
 }
 
 body {
@@ -23,50 +34,188 @@ h1, h2, h3, h4 {
     font-family: "Merriweather", "Playfair Display", serif
 }
 
-a, .btn-link {
-    color: #006bb7;
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--button-blue);
+    color: var(--white);
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+    transition: background-color 0.3s ease;
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    .button:hover {
+        background-color: var(--button-blue-hover);
+    }
+
+.button-cancel {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #565656;
+    color: var(--white);
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+    transition: background-color 0.3s ease;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+    .button-cancel:hover {
+        background-color: var(--button-blue-hover);
+    }
 
-.content {
-    padding-top: 1.1rem;
+.button-xtra {
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+    transition: background-color 0.3s ease;
 }
 
 h1:focus {
     outline: none;
 }
 
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+/* ---------------------------- Styling for home page ---------------------------- */
+
+#frontpage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 5em 10em;
 }
 
-.invalid {
-    outline: 1px solid #e50000;
-}
-
-.validation-message {
-    color: #e50000;
-}
-
-.blazor-error-boundary {
-    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=) no-repeat 1rem/1.8rem, #b32121;
-    padding: 1rem 1rem 1rem 3.7rem;
-    color: white;
-}
-
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
+    #frontpage h1 {
+        font-size: 3rem; /* Large font for title */
+        margin-bottom: 20px;
     }
 
-.darker-border-checkbox.form-check-input {
-    border-color: #929292;
+.description {
+    font-size: 1.25rem;
+    line-height: 1.6; /* Better readability */
+    margin-bottom: 30px;
+}
+
+#buttons-cointainer {
+    display: flex;
+    width: 100%;
+    margin-top: 1em;
+    justify-content: center;
+    gap: 15px; /* Space between buttons-cointainer */
+}
+
+    #buttons-cointainer div, #buttons-cointainer a {
+        margin: 0 1em
+    }
+
+#input-div, #continue {
+    width: 50%;
+}
+
+#input-button {
+    width: 100%;
+}
+
+/* ---------------------------- Overview ---------------------------- */
+
+#overview-content {
+    display: flex;
+    flex: 1;
+    gap: 45px;
+}
+
+#export-btn {
+    position: absolute;
+    right: 5em;
+}
+
+.container {
+    background-color: var(--secondary-bg);
+    max-width: none !important;
+}
+
+#pie {
+    width: 40%;
+}
+
+/* ---------------------------- Modal ---------------------------- */
+
+.modal.show {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.5); /* Backdrop effect */
+}
+
+
+.modal-content {
+    background-color: var(--secondary-bg);
+}
+
+/* ---------------------------- Pie ---------------------------- */
+
+.mud-paper {
+    color: var(--white) !important;
+    background-color: var(--darker-bg) !important;
+}
+
+.mud-chart-pie {
+    width: 100%;
+}
+
+/* ---------------------------- Family Tree ---------------------------- */
+
+#familyTree {
+    position: relative;
+    margin: 20px auto;
+    width: 100%;
+    min-height: 500px;
+    opacity: 99.9;
+}
+
+div.node {
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    background-color: #339;
+    color: #efefef;
+    font-family: sans-serif;
+    font-size: 0.7em;
+    text-align: center;
+    border-radius: 50%;
+    overflow: hidden;
+    position: absolute;
+}
+
+div.connector {
+    position: absolute;
+    background-color: #333;
+}
+
+    div.connector.h {
+        height: 2px;
+        background-color: #ddd;
+    }
+
+    div.connector.v {
+        height: 1px;
+        background-color: #66d;
+        -webkit-transform-origin: 0 100%;
+        transform-origin: 0 100%;
+    }
+
+div[data-level='0'] {
+    background-color: var(--family-tree-node-0);
+}
+
+div[data-level='1'], div[data-level='-1'] {
+    background-color: var(--family-tree-node-1);
+}
+
+div[data-level='2'], div[data-level='-2'] {
+    background-color: var(--family-tree-node-2);
 }

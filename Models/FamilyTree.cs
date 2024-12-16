@@ -24,10 +24,14 @@
 		{
 			Marriages.Add(marriage);
 		}
+        public static List<Marriage> GetMarriages()
+        {
+            return Marriages;
+        }
 
-		//public TreeGraphStructure GetFamilyTreeAsGraph()
-		//{
+        //public TreeGraphStructure GetFamilyTreeAsGraph()
+        //{
 
-		//}
-	}
+        //}
+    }
 }

@@ -1,5 +1,5 @@
 @rendermode InteractiveServer
-<div>
+<div style="display: flex;flex-direction: column;gap: 5px;">
     <label>
         Navn:
         <InputText @bind-value="editPerson.Name"></InputText>
@@ -9,7 +9,7 @@
         <InputDate TValue="DateOnly" @bind-Value="editPerson.Birthday"></InputDate>
     </label>
     <label>
-        ErDød?:
+        Er personen død? :
         <InputCheckbox @bind-Value="editPerson.IsAlive"></InputCheckbox>
     </label>
     <label>
@@ -28,7 +28,7 @@
                 <option value="@person.Name">@person.Name</option>
             }
         </InputSelect>
-        <button @onclick="() => editPerson.AddChild(selectedChild)">Tilføj barn</button>
+        <button class="btn-success button-xtra" @onclick="() => editPerson.AddChild(selectedChild)">Tilføj barn</button>
     </label>
     <label>
         forældre:
@@ -46,7 +46,7 @@
                 <option value="@person.Name">@person.Name</option>
             }
         </InputSelect>
-        <button @onclick="() => editPerson.AddParent(selectedParent)">Tilføj forælder</button>
+        <button class="btn-success button-xtra" @onclick="() => editPerson.AddParent(selectedParent)">Tilføj forælder</button>
     </label>
 </div>
 

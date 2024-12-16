@@ -1,53 +1,54 @@
 @rendermode InteractiveServer
-<label>
-    Navn:
-    <InputText @bind-value="editTestator.Name"></InputText>
-</label>
-<label>
-    Fødselsdag:
-    <InputDate TValue="DateOnly" @bind-Value="editTestator.Birthday"></InputDate>
-</label>
-<label>
-    ErDød?:
-    <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
-</label>
-<label>
-    Børn:
-    @foreach (var child in editTestator.Children)
-    {
-        <p>@child.Name</p>
-    }
-    <InputSelect @bind-value="selectedChildName">
-        @if (selectedChildName == null)
+<div style="display: flex;flex-direction: column;gap: 5px;">
+    <label>
+        Navn:
+        <InputText @bind-value="editTestator.Name"></InputText>
+    </label>
+    <label>
+        Fødselsdag:
+        <InputDate TValue="DateOnly" @bind-Value="editTestator.Birthday"></InputDate>
+    </label>
+    <label>
+        Er personen død? :
+        <InputCheckbox @bind-Value="editTestator.IsAlive"></InputCheckbox>
+    </label>
+    <label>
+        Børn:
+        @foreach (var child in editTestator.Children)
         {
-            <option selected value="">None</option>
+            <p>@child.Name</p>
         }
-        @foreach (var person in _persons)
+        <InputSelect @bind-value="selectedChildName">
+            @if (selectedChildName == null)
+            {
+                <option selected value="">None</option>
+            }
+            @foreach (var person in _persons)
+            {
+                <option value="@person.Name">@person.Name</option>
+            }
+        </InputSelect>
+        <button class="btn-success button-xtra" @onclick="() => editTestator.AddChild(selectedChild)">Tilføj barn</button>
+    </label>
+    <label>
+        forældre:
+        @foreach (var parent in editTestator.Parents)
         {
-            <option value="@person.Name">@person.Name</option>
+            <p>@parent.Name</p>
         }
-    </InputSelect>
-    <button @onclick="() => editTestator.AddChild(selectedChild)">Tilføj barn</button>
-</label>
-<label>
-    forældre:
-    @foreach (var parent in editTestator.Parents)
-    {
-        <p>@parent.Name</p>
-    }
-    <InputSelect @bind-value="selectedParentName">
-        @if (selectedParentName == null)
-        {
-            <option selected value="">None</option>
-        }
-        @foreach (var person in _persons)
-        {
-            <option value="@person.Name">@person.Name</option>
-        }
-    </InputSelect>
-    <button @onclick="() => editTestator.AddParent(selectedParent)">Tilføj forælder</button>
-</label>
-
+        <InputSelect @bind-value="selectedParentName">
+            @if (selectedParentName == null)
+            {
+                <option selected value="">None</option>
+            }
+            @foreach (var person in _persons)
+            {
+                <option value="@person.Name">@person.Name</option>
+            }
+        </InputSelect>
+        <button class="btn-success button-xtra" @onclick="() => editTestator.AddParent(selectedParent)">Tilføj forælder</button>
+    </label>
+</div>
 
 @code {
     [Parameter]
@@ -73,13 +74,13 @@
         }
         base.OnParametersSet();
     }
-    
+
     public void Submit()
     {
         Inheritance.AddTestator(editTestator);
         Reset();
     }
-    
+
     public void Delete()
     {
         Inheritance.DeleteTestator(editTestator);
