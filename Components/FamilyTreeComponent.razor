@@ -7,12 +7,8 @@
     <button class="btn btn-primary" @onclick="() => modal.Open(typeof(PersonEdit), Update)">Tilføj ny arving</button>
     <button class="btn btn-primary" @onclick="() => modal.Open(typeof(AssetEdit), Update)">Tilføj nyt aktiv</button>
 
-    <div id="familyTree">
-    </div>
-
     @if (Inheritance.GetTestators().Any())
     {
-        <h2>Stamtræ:</h2>
         <h3>Arveladere:</h3>
         @foreach (var testator in Inheritance.GetTestators())
         {
@@ -49,7 +45,7 @@
         if (!Inheritance.GetTestators().Any()) modal.Open(typeof(TestatorEdit), Update);
         base.OnAfterRender(firstRender);
 
-        GenerateHtmlFamilyTree();
+        // GenerateHtmlFamilyTree();
     }
 
     private async Task GenerateHtmlFamilyTree()
