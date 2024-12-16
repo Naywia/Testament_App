@@ -1,11 +1,12 @@
 html, body {
     height: 100vh;
-    font-family: "Quicksand", "Montserrat", "Raleway", sans-serif;
-    color: var(--white);
+    font-family: "Quicksand", "Montserrat", "Raleway", sans-serif !important;
+    color: var(--white) !important;
     --white: #ffffff;
     --button-blue: #0074d9;
     --button-blue-hover: #0056a3;
     --secondary-bg: #333333;
+    --darker-bg: #1f1f1f;
     --family-tree-node-0: #993333;
     --family-tree-node-1: #E29E31;
     --family-tree-node-2: #37718E;
@@ -46,9 +47,9 @@ h1, h2, h3, h4 {
     transition: background-color 0.3s ease;
 }
 
-.button:hover {
-    background-color: var(--button-blue-hover);
-}
+    .button:hover {
+        background-color: var(--button-blue-hover);
+    }
 
 .button-cancel {
     display: inline-block;
@@ -144,6 +145,17 @@ h1:focus {
 
 .modal-content {
     background-color: var(--secondary-bg);
+}
+
+/* ---------------------------- Pie ---------------------------- */
+
+.mud-paper {
+    color: var(--white) !important;
+    background-color: var(--darker-bg) !important;
+}
+
+.mud-chart-pie {
+    width: 100%;
 }
 
 /* ---------------------------- Family Tree ---------------------------- */
