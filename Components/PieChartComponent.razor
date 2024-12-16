@@ -1,3 +1,6 @@
+
+@rendermode InteractiveServer
+
 <MudPaper Class="pa-4">
     <MudChart ChartType="ChartType.Pie" InputData="@data" @bind-SelectedIndex="Index" InputLabels="@labels" Width="300px" Height="300px" />
 </MudPaper>
@@ -5,24 +8,51 @@
     @* <MudButton OnClick="AddDataSize" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton> *@
     @* <MudButton @onclick="RandomizeData" Variant="Variant.Filled" Class="mx-4">Randomize</MudButton> *@
     @* <MudButton OnClick="RemoveDataSize" Variant="Variant.Filled" Color="Color.Secondary">Remove</MudButton> *@
-    <MudButton OnClick="Calc" Variant="Variant.Filled" Color="Color.Secondary">Update</MudButton>
+    <MudButton OnClick="Calc" Variant="Variant.Filled" Color="Color.Primary">Update</MudButton>
 </MudPaper>
 @* <MudText Typo="Typo.h6">Selected portion of the chart: @Index</MudText> *@
 
 @code {
     private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
     int dataSize = 4;
-    double[] data = { 77, 25, 20, 5 };
-    string[] labels = { "Uranium", "Plutonium", "Thorium", "Caesium", "Technetium", "Promethium",
+    double[] data = null; //{ 77, 25, 20, 5 };
+    string[] labels = null; /*{ "Uranium", "Plutonium", "Thorium", "Caesium", "Technetium", "Promethium",
         "Polonium", "Astatine", "Radon", "Francium", "Radium", "Actinium", "Protactinium",
-        "Neptunium", "Americium", "Curium", "Berkelium", "Californium", "Einsteinium", "Mudblaznium" };
+        "Neptunium", "Americium", "Curium", "Berkelium", "Californium", "Einsteinium", "Mudblaznium" };*/
 
-    Random random = new Random();
+    Random random = new();
+    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Console.WriteLine("OnAfterRender");
+        base.OnAfterRender(firstRender);
+    }
 
+    // Todo: Take inheritance categories into account
     void Calc()
     {
-        Double familyMemeberCount = FamilyTree.GetMembers().Count;
-        Double heirCount = Inheritance.GetHeirs().Count(heir => heir.IsAlive == false);
+        var testators = Inheritance.GetTestators();
+        List<Person> heirs = new();
+        // Todo: Handle 1st inheritance category
+        // Handle testator case
+        if (testators.Length > 1 && testators.Count(testator => testator.IsAlive) > 0)
+            heirs.AddRange(testators.Where(testator => testator.IsAlive == false));
+        // Handle children of testators
+        foreach (var testator in testators.Where(testator => testator.IsAlive))
+        {
+            foreach (var child in testator.GetChildren().Where(child => child.IsAlive == false).Where(child => !heirs.Contains(child)))
+            {
+                heirs.Add(child);
+            }
+        }
+        
+        // Todo: Handle 2nd inheritance category
+
+        // Todo: Handle 3rd inheritance category
+        
+        //heirs.AddRange(Inheritance.GetHeirs().Where(heir => heir.IsAlive == false));
+        Double heirCount = heirs.Count;
+            
         Double result = (1 / heirCount) * 100;
 
         var new_data = new double[(int)heirCount];
@@ -32,10 +62,10 @@
 
         var new_labels = new string[(int)heirCount];
         for (int i = 0; i < new_labels.Length; i++)
-            new_labels[i] = $"{Inheritance.GetHeirs()[i].Name}: {result:F}";
+            new_labels[i] = $"{heirs[i].Name}: {result:F}";
         labels = new_labels;
         
-        StateHasChanged();
+        //StateHasChanged();
     }
 
     void RandomizeData()
