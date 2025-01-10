@@ -1,0 +1,36 @@
+﻿@rendermode InteractiveServer
+<h4>Contact Form</h4>
+
+<EditForm Model="contact" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="message">Message:</label>
+        <InputTextArea id="message" @bind-Value="contact.Message" />
+        <ValidationMessage For="@(() => contact.Message)" />
+    </div>
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+@if (isSubmitted)
+{
+    <p>Your message has been submitted successfully!</p>
+}
+
+@code {
+    private Contact contact;
+    private bool isSubmitted = false;
+
+    protected override void OnInitialized()
+    {
+        contact = new Contact();
+    }
+
+    private void HandleValidSubmit()
+    {
+        isSubmitted = true;
+        Console.WriteLine("Form submitted successfully: ContactForm");
+    }
+}
