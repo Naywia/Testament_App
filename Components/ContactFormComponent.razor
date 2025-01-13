@@ -1,5 +1,7 @@
-﻿@rendermode InteractiveServer
-<h4>Contact Form</h4>
+﻿@using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer 
+
+<h3>Contact Form</h3>
 
 <EditForm Model="contact" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -21,16 +23,25 @@
 
 @code {
     private Contact contact;
-    private bool isSubmitted = false;
 
     protected override void OnInitialized()
     {
         contact = new Contact();
+
+    }
+    private bool isSubmitted;
+
+    private class Contact
+    {
+        [Required (ErrorMessage = "husk at indtast")]
+
+        public string Message { get; set; }
     }
 
     private void HandleValidSubmit()
     {
         isSubmitted = true;
-        Console.WriteLine("Form submitted successfully: ContactForm");
+        Console.WriteLine("");
     }
+    
 }

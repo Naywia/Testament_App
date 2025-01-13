@@ -16,6 +16,7 @@ namespace Testament_App
 
             builder.Services.AddSingleton<PDFService>();
             builder.Services.AddMudServices();
+            builder.Services.AddScoped<IEquipmentService, EquipmentService>();
 
             var app = builder.Build();
 
