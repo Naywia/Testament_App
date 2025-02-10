@@ -43,8 +43,8 @@ This project follows a structured weekly development plan, where new requirement
 * Focus: Demonstrating system functionality and alignment with exam criteria
 
 ## Developers  
-Daniel Staugaard Madsen  
-Emil Malik Albrechtsen   
-Maya Wettendorff  
-Mikkel Flensborg Paulick  
-Rasmus Sandberg Nørby  
+DSmaSSen      
+ealbrechtsen       
+Naywia  
+mrpink32  
+r4sNorby  
